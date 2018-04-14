@@ -1,2 +1,4 @@
 flask-appbuilder
 pillow
+geoalchemy2
+psycopg2
