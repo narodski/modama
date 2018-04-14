@@ -1,6 +1,10 @@
 import logging
 from flask import Flask
 from flask_appbuilder import SQLA, AppBuilder
+import os
+from flask_migrate import Migrate
+
+APP_DIR = os.path.dirname(__file__)
 
 """
  Logging configuration
@@ -12,6 +16,8 @@ logging.getLogger().setLevel(logging.DEBUG)
 app = Flask(__name__)
 app.config.from_object('config')
 db = SQLA(app)
+
+migrate = Migrate(app, db, directory=APP_DIR + '/migrate')
 appbuilder = AppBuilder(app, db.session, base_template='modama_base.html')
 
 
@@ -28,5 +34,5 @@ def set_sqlite_pragma(dbapi_connection, connection_record):
     cursor.close()
 """
 
-from app.views import common
-from app.datasets import pawikan
+from modama.views import common
+from modama.datasets import _datasets

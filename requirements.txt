@@ -2,3 +2,5 @@ flask-appbuilder
 pillow
 geoalchemy2
 psycopg2
+flask-migrate
+flask-script
