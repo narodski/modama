@@ -2,10 +2,38 @@ from flask_appbuilder import Model
 from sqlalchemy import Column, Integer, String, ForeignKey, Numeric, Text
 from sqlalchemy.orm import relationship
 from modama.models.dataset_base import BaseObservation, Sex
-from flask_appbuilder.models.mixins import ImageColumn
+from flask_appbuilder.models.mixins import ImageColumn, AuditMixin
 from modama.utils import make_image
 from flask_appbuilder.filemanager import ImageManager
 from flask import url_for
+
+
+class PawikanEncounterPicture(Model, AuditMixin):
+    id = Column(Integer, primary_key=True)
+    picture = Column(ImageColumn(size=(2048, 2048, False),
+                                 thumbnail_size=(800, 800, True)))
+    encounter_id = Column(Integer, ForeignKey('pawikan_encounter.id'),
+                          nullable=False)
+    encounter = relationship('PawikanEncounter', backref='pictures')
+
+    def picture_img(self):
+        im = ImageManager()
+        alt = str(self.encounter)
+        link_url = url_for('PawikanEncounterPictureView.show', pk=self.id)
+        if self.picture:
+            return make_image(im.get_url(self.picture), link_url, alt)
+        else:
+            return make_image(None, link_url, alt)
+
+    def picture_img_thumbnail(self):
+        im = ImageManager()
+        alt = str(self.encounter)
+        link_url = url_for('PawikanEncounterPictureView.show', pk=self.id)
+        if self.picture:
+            return make_image(im.get_url_thumbnail(self.picture),
+                              link_url, alt)
+        else:
+            return make_image(None, link_url, alt)
 
 
 class PawikanEncounterType(Model):
@@ -64,9 +92,13 @@ class PawikanEncounter(BaseObservation):
     sex_id = Column(Integer, ForeignKey('sex.id'))
     sex = relationship(Sex)
 
+    @property
+    def num_pictures(self):
+        return len(self.pictures)
+
     __mapper_args__ = {
         'polymorphic_identity': 'pawikan'
     }
 
     def __repr__(self):
-        return "%(s), %(s)" % (self.created_on, self.species.common_name)
+        return "%s, %s" % (self.created_on, self.species.common_name)
