@@ -1,3 +1,4 @@
+.pytest_cache
 modama/static/uploads/*
 *.pyc
 .*.swp
