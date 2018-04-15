@@ -1,10 +1,12 @@
+import copy
 from modama.form_convert import FormConvert, UnsupportedFieldException
 from unittest import TestCase
 from wtforms.form import Form
 from wtforms import validators
 from wtforms.fields.core import (StringField, DecimalField, SelectField,
-                                 IntegerField, Field)
+                                 IntegerField, Field, DateTimeField)
 from wtforms.widgets import TextInput
+from flask_appbuilder.fields import QuerySelectField
 
 
 class CustomField(Field):
@@ -14,6 +16,22 @@ class CustomField(Field):
 class UnsupportedForm(Form):
     custom_field = CustomField('Custom Field')
     first_name = StringField('First Name', validators=[validators.required()])
+
+
+class FABTestForm(Form):
+    _schema = {
+        'type': 'object',
+        'properties': {
+            'gender': {
+                'type': 'string',
+                'title': 'Gender',
+                'enum': ['Male', 'Female', 'Alien', 'Other']
+            }
+        }
+    }
+    gender = QuerySelectField('Gender',
+                              query_func=lambda: ['Male', 'Female',
+                                                  'Alien', 'Other'])
 
 
 class StringTestForm(Form):
@@ -34,12 +52,18 @@ class StringTestForm(Form):
             'simplestring': {
                 'type': 'string',
                 'title': 'Simple String'
+            },
+            'dt': {
+                'type': 'string',
+                'title': 'DateTime',
+                'format': 'date-time'
             }
         }
     }
     email = StringField('Email Address', validators=[validators.Email()])
     length_string = StringField('Name', validators=[validators.Length(5, 10)])
     simplestring = StringField('Simple String')
+    dt = DateTimeField('DateTime')
 
 
 class SimpleTestForm(Form):
@@ -62,7 +86,9 @@ class SimpleTestForm(Form):
             },
             'average': {
                 'type': 'number',
-                'title': 'Average'
+                'title': 'Average',
+                'minimum': 10,
+                'maximum': 1000
             },
             'gender': {
                 'type': 'string',
@@ -73,6 +99,11 @@ class SimpleTestForm(Form):
                 'type': 'integer',
                 'title': 'Bla',
                 'enum': [1, 2, 3]
+            },
+            'some_field2': {
+                'type': 'number',
+                'title': 'Bla',
+                'enum': [1.5, 2.2, 3]
             }
         },
         'required': ['first_name', 'age']
@@ -81,10 +112,12 @@ class SimpleTestForm(Form):
     nick_name = StringField('Nickname')
     age = IntegerField('Age', validators=[validators.number_range(0, 10),
                                           validators.required()])
-    average = DecimalField('Average')
+    average = DecimalField('Average',
+                           validators=[validators.number_range(10, 1000)])
     gender = SelectField("Gender", choices=['Male', 'Female', 'Alien',
                                             'Other'])
     some_field = SelectField("Bla", choices=[1, 2, 3])
+    some_field2 = SelectField("Bla", choices=[1.5, 2.2, 3])
 
 
 class TestFormConvert(TestCase):
@@ -94,6 +127,17 @@ class TestFormConvert(TestCase):
 
     def tearDown(self):
         pass
+
+    def test_skip_fields(self):
+        converter = FormConvert(skip_fields=['email'])
+        schema = converter.convert(StringTestForm())
+        correct_schema = copy.deepcopy(StringTestForm._schema)
+        del(correct_schema['properties']['email'])
+        self.assertEqual(schema, correct_schema)
+
+    def test_fab_form(self):
+        self.assertEqual(self.converter.convert(FABTestForm),
+                         FABTestForm._schema)
 
     def test_string_fields(self):
         self.assertEqual(self.converter.convert(StringTestForm),
