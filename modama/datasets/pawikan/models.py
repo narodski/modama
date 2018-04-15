@@ -1,7 +1,11 @@
 from flask_appbuilder import Model
-from sqlalchemy import Column, Integer, String, ForeignKey, Numeric
+from sqlalchemy import Column, Integer, String, ForeignKey, Numeric, Text
 from sqlalchemy.orm import relationship
 from modama.models.dataset_base import BaseObservation, Sex
+from flask_appbuilder.models.mixins import ImageColumn
+from modama.utils import make_image
+from flask_appbuilder.filemanager import ImageManager
+from flask import url_for
 
 
 class PawikanEncounterType(Model):
@@ -18,6 +22,28 @@ class PawikanSpecies(Model):
     genus = Column(String(255), nullable=False)
     species = Column(String(255), nullable=False)
     common_name = Column(String(255))
+    description = Column(Text)
+    picture = Column(ImageColumn(size=(800, 800, True),
+                                 thumbnail_size=(100, 100, True)))
+
+    def picture_img(self):
+        im = ImageManager()
+        alt = str(self)
+        link_url = url_for('PawikanSpeciesView.show', pk=self.id)
+        if self.picture:
+            return make_image(im.get_url(self.picture), link_url, alt)
+        else:
+            return make_image(None, link_url, alt)
+
+    def picture_img_thumbnail(self):
+        im = ImageManager()
+        alt = str(self)
+        link_url = url_for('PawikanSpeciesView.show', pk=self.id)
+        if self.picture:
+            return make_image(im.get_url_thumbnail(self.picture),
+                              link_url, alt)
+        else:
+            return make_image(None, link_url, alt)
 
     def __repr__(self):
         if self.common_name is not None:

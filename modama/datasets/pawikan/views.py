@@ -31,9 +31,12 @@ class PawikanEncounterView(BaseObservationView):
 
 class PawikanSpeciesView(ModelView):
     datamodel = SQLAInterface(PawikanSpecies)
-    list_columns = ['genus', 'species', 'common_name']
-    edit_columns = ["genus", "species", "common_name"]
-    add_columns = ["genus", "species", "common_name"]
+    label_columns = {'picture_img_thumbnail': 'Picture',
+                     'picture_img': 'Picture'}
+    list_columns = ['genus', 'species', 'common_name', 'picture_img_thumbnail']
+    edit_columns = ["genus", "species", "common_name", 'picture']
+    add_columns = ["genus", "species", "common_name", 'picture']
+    show_columns = ['genus', 'species', 'common_name', 'picture_img']
 
 
 appbuilder.add_view(PawikanEncounterView, "Encounters", category="Pawikan")

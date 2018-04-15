@@ -1,4 +1,6 @@
+modama/static/uploads/*
 *.pyc
+.*.swp
 app.db
 ./tmp
 ./build/*
