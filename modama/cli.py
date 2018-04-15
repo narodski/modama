@@ -16,6 +16,14 @@ manager.add_command('db', MigrateCommand)
 
 
 @manager.command
+def shell():
+    import code
+    ctx = app.app_context()
+    ctx.push()
+    code.interact(local={'ctx': ctx})
+
+
+@manager.command
 def load_base_data():
     db.session.add(dataset_base.Sex(name='Male'))
     db.session.add(dataset_base.Sex(name='Female'))
