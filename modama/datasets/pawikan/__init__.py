@@ -20,3 +20,6 @@ def load_base_data():
                                   common_name="Loggerhead Turtle"))
     db.session.add(PawikanSpecies(genus="Lepidochelys", species="olivacea",
                                   common_name="Olive Ridley Turtle"))
+
+
+mobile_views = [PawikanEncounterView]

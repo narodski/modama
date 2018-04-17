@@ -3,6 +3,9 @@ from flask import Flask
 from flask_appbuilder import SQLA, AppBuilder
 import os
 from flask_migrate import Migrate
+from flask_socketio import SocketIO
+from flask_session import Session
+from modama.security.manager import ModamaSecurityManager
 
 APP_DIR = os.path.dirname(__file__)
 
@@ -15,10 +18,22 @@ logging.getLogger().setLevel(logging.DEBUG)
 
 app = Flask(__name__)
 app.config.from_object('config')
+
+try:
+    from .instance import config
+    d = dict([(k, v) for k, v in config.__dict__.items()
+              if not k.startswith('_')])
+    app.config.update(d)
+except Exception:
+    pass
+
+sess = Session(app)
 db = SQLA(app)
+socketio = SocketIO(app, manage_session=False)
 
 migrate = Migrate(app, db, directory=APP_DIR + '/migrate')
-appbuilder = AppBuilder(app, db.session, base_template='modama_base.html')
+appbuilder = AppBuilder(app, db.session, base_template='modama_base.html',
+                        security_manager_class=ModamaSecurityManager)
 
 
 """

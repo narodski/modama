@@ -1,6 +1,10 @@
+pyjwt
+flask-session
+flask-socketio
 flask-appbuilder
 pillow
 geoalchemy2
 psycopg2
 flask-migrate
 flask-script
+wtforms_jsonschema2[fab]

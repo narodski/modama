@@ -1,3 +1,4 @@
+flask_session
 .coverage
 .pytest_cache
 modama/static/uploads/*
