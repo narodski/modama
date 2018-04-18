@@ -13,6 +13,7 @@ class AuthDBJWTView(AuthDBView):
     @expose('/login/', methods=['GET', 'POST'])
     def login(self):
         config = self.appbuilder.get_app.config
+        cookie_secure = config.get('SESSION_COOKIE_SECURE', True)
         expiration = config.get('JWT_EXPIRATION_HOURS', -1)
         valid_until = datetime.now(timezone.utc) + timedelta(days=999*365)
         if expiration > 0:
@@ -26,7 +27,8 @@ class AuthDBJWTView(AuthDBView):
             payload['exp'] = valid_until
             token = jwt.encode(payload, secret, algorithm='HS256')
             resp = make_response(redirect(redir_url))
-            resp.set_cookie('modama_jwt', token, expires=valid_until)
+            resp.set_cookie('modama_jwt', token, expires=valid_until,
+                            secure=cookie_secure, httponly=True)
             return resp
         token = request.cookies.get('modama_jwt', False)
         if token:
@@ -38,7 +40,8 @@ class AuthDBJWTView(AuthDBView):
                 payload['exp'] = valid_until
                 token = jwt.encode(payload, secret, algorithm='HS256')
                 resp = make_response(redirect(redir_url))
-                resp.set_cookie('modama_jwt', token, expires=valid_until)
+                resp.set_cookie('modama_jwt', token, expires=valid_until,
+                                secure=cookie_secure, httponly=True)
                 return resp
             except jwt.exceptions.InvalidTokenError:
                 pass
@@ -54,7 +57,8 @@ class AuthDBJWTView(AuthDBView):
             payload['exp'] = valid_until
             token = jwt.encode(payload, secret, algorithm='HS256')
             resp = make_response(redirect(redir_url))
-            resp.set_cookie('modama_jwt', token, expires=valid_until)
+            resp.set_cookie('modama_jwt', token, expires=valid_until,
+                            secure=cookie_secure, httponly=True)
             return resp
         return self.render_template(self.login_template,
                                     title=self.title,

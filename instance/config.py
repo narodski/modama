@@ -5,8 +5,8 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 SECRET_KEY = "W$|=&TXWAp+_Fm-ovXE!kg*Jges/2+K&6&m>F#(}6c1W(Ln4^6ycI@GwBN1L#kCu@RZBb)4O-O2R\rq?eO5OzO3-y5-R:dN'9\Q"
 SQLALCHEMY_DATABASE_URI = 'postgresql:///modama'
 
-# Flask-WTF flag for CSRF
-CSRF_ENABLED = True
+SESSION_COOKIE_SECURE = False
+REMEMBER_COOKIE_SECURE = False
 
 SESSION_TYPE = 'filesystem'
 
