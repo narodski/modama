@@ -8,6 +8,7 @@ from .models import PawikanEncounterPicture
 
 
 class PawikanEncounterPictureView(ModelView):
+    _pretty_name = 'Picture'
     datamodel = SQLAInterface(PawikanEncounterPicture)
     edit_columns = ['picture']
     show_columns = ['picture_img',
@@ -21,6 +22,7 @@ class PawikanEncounterPictureView(ModelView):
 
 
 class PawikanEncounterTypeView(ModelView):
+    _pretty_name = 'Encounter Type'
     datamodel = SQLAInterface(PawikanEncounterType)
     list_columns = ['name', 'description']
     edit_columns = ['name', 'description']
@@ -28,6 +30,7 @@ class PawikanEncounterTypeView(ModelView):
 
 
 class PawikanEncounterView(BaseObservationView):
+    _pretty_name = 'Encounter'
     datamodel = SQLAInterface(PawikanEncounter)
     label_columns = {'num_pictures': 'Number Of Pictures'}
     list_columns = ['created_on', 'created_by', 'species', 'encounter_type',
@@ -49,6 +52,7 @@ class PawikanEncounterView(BaseObservationView):
 
 
 class PawikanSpeciesView(ModelView):
+    _pretty_name = 'Species'
     datamodel = SQLAInterface(PawikanSpecies)
     label_columns = {'picture_img_thumbnail': 'Picture',
                      'picture_img': 'Picture'}

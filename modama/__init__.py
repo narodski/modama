@@ -50,4 +50,5 @@ def set_sqlite_pragma(dbapi_connection, connection_record):
 """
 
 from modama.views import common
-from modama.datasets import _datasets
+from modama import datasets
+from modama import sockets

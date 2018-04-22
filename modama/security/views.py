@@ -15,16 +15,17 @@ class AuthDBJWTView(AuthDBView):
         config = self.appbuilder.get_app.config
         cookie_secure = config.get('SESSION_COOKIE_SECURE', True)
         expiration = config.get('JWT_EXPIRATION_HOURS', -1)
-        valid_until = datetime.now(timezone.utc) + timedelta(days=999*365)
+        base_payload = {}
         if expiration > 0:
             valid_until = datetime.now(timezone.utc) + \
                 timedelta(hours=expiration)
+            base_payload['exp'] = valid_until
         secret = config.get('JWT_SECRET')
         redir_url = request.args.get('orig_url',
                                      self.appbuilder.get_url_for_index)
         if g.user is not None and g.user.is_authenticated():
             payload = {'user': {'id': g.user.id, 'username': g.user.username}}
-            payload['exp'] = valid_until
+            payload.update(base_payload)
             token = jwt.encode(payload, secret, algorithm='HS256')
             resp = make_response(redirect(redir_url))
             resp.set_cookie('modama_jwt', token, expires=valid_until,
@@ -37,7 +38,7 @@ class AuthDBJWTView(AuthDBView):
                 userid = payload['user']['id']
                 user = self.appbuilder.sm.get_user_by_id(userid)
                 login_user(user)
-                payload['exp'] = valid_until
+                payload.update(base_payload)
                 token = jwt.encode(payload, secret, algorithm='HS256')
                 resp = make_response(redirect(redir_url))
                 resp.set_cookie('modama_jwt', token, expires=valid_until,
@@ -54,7 +55,7 @@ class AuthDBJWTView(AuthDBView):
                 return redirect(redir_url)
             login_user(user, remember=False)
             payload = {'user': {'id': user.id, 'username': user.username}}
-            payload['exp'] = valid_until
+            payload.update(base_payload)
             token = jwt.encode(payload, secret, algorithm='HS256')
             resp = make_response(redirect(redir_url))
             resp.set_cookie('modama_jwt', token, expires=valid_until,

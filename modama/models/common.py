@@ -13,11 +13,4 @@ AuditMixin will add automatic timestamp of created and modified by who
 """
 
 
-class Dataset(Model):
-    id = Column(Integer, primary_key=True)
-    name = Column(String(50), unique=True, nullable=False)
-    description = Column(String(255))
-    module = Column(String(255), unique=True, nullable=False)
 
-    def __repr__(self):
-        return self.name

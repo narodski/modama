@@ -2,13 +2,7 @@ from flask import render_template
 from flask_appbuilder.models.sqla.interface import SQLAInterface
 from flask_appbuilder import ModelView
 from modama import appbuilder, db
-from modama.models.common import Dataset
 from modama.models.dataset_base import Sex
-
-
-class DatasetView(ModelView):
-    datamodel = SQLAInterface(Dataset)
-    list_columns = ['name', 'description']
 
 
 class SexView(ModelView):
@@ -26,5 +20,4 @@ def page_not_found(e):
                            appbuilder=appbuilder), 404
 
 
-appbuilder.add_view(DatasetView, "List Datasets", category="Datasets")
 appbuilder.add_view(SexView, "Sexes", category="Datasets")

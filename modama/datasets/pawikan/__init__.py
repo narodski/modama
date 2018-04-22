@@ -23,3 +23,4 @@ def load_base_data():
 
 
 mobile_views = [PawikanEncounterView]
+name = "Pawikan"
