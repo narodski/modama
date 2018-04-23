@@ -11,6 +11,7 @@ log = logging.getLogger(__name__)
 
 @socketio.on('connect')
 def checkAuth():
+    log.info("Connection made")
     permission_str = PERMISSION_PREFIX + 'add'
     converter = FABConverter()
     forms = {}
@@ -23,6 +24,6 @@ def checkAuth():
         if len(forms[ds.name]) == 0:
             del(forms[ds.name])
     log.info("Sending forms %s" % forms)
-    send(forms)
+    emit('newForms', forms)
     # else:
     #     return False

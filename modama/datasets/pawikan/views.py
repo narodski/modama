@@ -49,6 +49,10 @@ class PawikanEncounterView(BaseObservationView):
         ]
     }
     related_views = [PawikanEncounterPictureView]
+    list_title = "Encounters"
+    edit_title = "Edit Encounter"
+    add_title = "Add Encounter"
+    show_title = "Encounter"
 
 
 class PawikanSpeciesView(ModelView):
@@ -60,6 +64,10 @@ class PawikanSpeciesView(ModelView):
     edit_columns = ["genus", "species", "common_name", 'picture']
     add_columns = ["genus", "species", "common_name", 'picture']
     show_columns = ['genus', 'species', 'common_name', 'picture_img']
+    list_title = "Species"
+    edit_title = "Edit Species"
+    add_title = "Add Species"
+    show_title = "Species"
 
 
 appbuilder.add_view(PawikanEncounterView, "Encounters", category="Pawikan")
