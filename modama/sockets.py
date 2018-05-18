@@ -14,16 +14,16 @@ def checkAuth():
     log.info("Connection made")
     permission_str = PERMISSION_PREFIX + 'add'
     converter = FABConverter()
-    forms = {}
+    datasets = {}
     # if g.user is not None and g.user.is_authenticated():
     for ds in _datasets:
-        forms[ds.name] = []
+        accessible_views = []
         for v in ds.mobile_views:
             # if appbuilder.sm.has_access(permission_str, v.__name__):
-            forms[ds.name].append(converter.convert(v().add_form))
-        if len(forms[ds.name]) == 0:
-            del(forms[ds.name])
-    log.info("Sending forms %s" % forms)
-    emit('newForms', forms)
+            accessible_views.append(v)
+        if len(accessible_views) > 0:
+            datasets[ds.name] = converter.convert(accessible_views)
+    log.info("Sending datasets %s" % datasets)
+    emit('newDatasets', datasets)
     # else:
     #     return False
