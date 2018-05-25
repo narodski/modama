@@ -48,7 +48,7 @@ class PawikanEncounterView(BaseObservationView):
                         message='CCL should be between 50cm and 250cm')
         ]
     }
-    # related_views = [PawikanEncounterPictureView]
+    related_views = [PawikanEncounterPictureView]
     list_title = "Encounters"
     edit_title = "Edit Encounter"
     add_title = "Add Encounter"

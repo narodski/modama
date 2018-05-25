@@ -1,4 +1,4 @@
 from modama import app
 
-app.run(host='0.0.0.0', port=8080, debug=True)
+app.run(host='modama.localhost.lan', port=8080, debug=False)
 

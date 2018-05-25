@@ -12,19 +12,21 @@ APP_DIR = os.path.dirname(__file__)
 """
  Logging configuration
 """
-
 logging.basicConfig(format='%(asctime)s:%(levelname)s:%(name)s:%(message)s')
-logging.getLogger().setLevel(logging.DEBUG)
+log = logging.getLogger()
+log.setLevel(logging.DEBUG)
 
 app = Flask(__name__)
 app.config.from_object('config')
 
 try:
-    from .instance import config
+    from instance import config
+    log.info("Loading custom config")
     d = dict([(k, v) for k, v in config.__dict__.items()
               if not k.startswith('_')])
     app.config.update(d)
-except Exception:
+except Exception as e:
+    log.info("No custom config found: {}".format(e))
     pass
 
 sess = Session(app)

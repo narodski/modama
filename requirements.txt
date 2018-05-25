@@ -1,3 +1,4 @@
+eventlet
 pyjwt
 flask-session
 flask-socketio
