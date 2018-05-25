@@ -1,4 +1,5 @@
 flask_session
+instance/*
 .coverage
 .pytest_cache
 modama/static/uploads/*
