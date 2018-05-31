@@ -20,7 +20,7 @@ class BaseObservation(Model, AuditMixin):
     # location = Column(Geometry(geometry_type='POINT', srid=4326))
     verified = Column(Boolean, nullable=False, default=False)
     observation_datetime = Column(DateTime(timezone=True), nullable=False)
-    observer_id = Column(Integer, ForeignKey('ab_user.id'))
+    observer_id = Column(Integer, ForeignKey('ab_user.id'), nullable=False)
     observer = relationship(User, foreign_keys=[observer_id])
     dataset = Column(String(50))
 

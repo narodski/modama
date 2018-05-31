@@ -9,3 +9,5 @@ psycopg2
 flask-migrate
 flask-script
 wtforms_jsonschema2[fab]
+python-dateutil
+tzlocal

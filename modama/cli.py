@@ -8,6 +8,7 @@ from modama import app, db
 from modama.models import common, dataset_base
 from modama.datasets import _datasets
 
+app.config['CSRF_ENABLED'] = False
 config = app.config
 
 
