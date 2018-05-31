@@ -1,8 +1,8 @@
-# from modama import appbuilder
+from modama import appbuilder
 from modama.datasets import _datasets
 from modama import db
 from flask import g
-# from flask_appbuilder.const import PERMISSION_PREFIX
+from flask_appbuilder.const import PERMISSION_PREFIX
 from wtforms_jsonschema2.fab import FABConverter
 from wtforms import fields
 import logging
@@ -32,13 +32,19 @@ class FormService(object):
     converter = FABConverter()
 
     @staticmethod
+    def currentUserViewAccess(cls, view, permission):
+        if cls.getCurrentUser() is None:
+            return False
+        permission_str = PERMISSION_PREFIX + permission
+        return appbuilder.sm.has_access(permission_str, view.__name)
+
+    @staticmethod
     def getDatasets():
-        # permission_str = PERMISSION_PREFIX + 'add'
         datasets = {}
         for ds in _datasets:
             accessible_views = []
             for v in ds.mobile_views:
-                # if appbuilder.sm.has_access(permission_str, v.__name__):
+                # if cls.currentUserViewAccess(v, 'add' ):
                 accessible_views.append(v)
             if len(accessible_views) > 0:
                 datasets[ds.name] = accessible_views
@@ -63,11 +69,18 @@ class FormService(object):
                 "Dataset {} does not exist".format(datasetname))
         for v in dataset.mobile_views:
             if cls.converter._get_pretty_name(v, 'show') == formname:
-                # and appbuilder.sm.has_access(permission_str, v.__name__):
+                # and cls.currentUserViewAccess(v, 'add' ):
                 return v
         raise UnkownFormError(
             "No such form {} in dataset {}".format(datasetname, formname)
         )
+
+    @classmethod
+    def getCurrentUser(cls):
+        if g.user is not None and g.user.is_authenticated():
+            return g.user
+        else:
+            return None
 
     @classmethod
     def getForm(cls, view, formType='add'):
@@ -79,14 +92,10 @@ class FormService(object):
         form = cls.getForm(view, 'add')
         related_data = {}
 
-        if g.user is not None and g.user.is_authenticated():
-            current_user = g.user
-            filename_base = "".join([
-                c for c in str(current_user).replace(' ', '_')
-                if c.isalnum()]).rstrip()
-
-        else:
-            filename_base = 'unkown'
+        current_user = cls.getCurrentUser()
+        filename_base = "".join([
+            c for c in str(current_user).replace(' ', '_')
+            if c.isalnum()]).rstrip()
 
         for col in cols:
             if col in data.keys():
@@ -115,7 +124,7 @@ class FormService(object):
         else:
             raise ValidationError(
                 "\n".join(["{}: {}".format(k, ';'.join(v))
-                    for k, v in form.errors.items()])
+                           for k, v in form.errors.items()])
             )
 
         if view.related_views is not None:
