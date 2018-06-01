@@ -37,6 +37,20 @@ migrate = Migrate(app, db, directory=APP_DIR + '/migrate')
 appbuilder = AppBuilder(app, db.session, base_template='modama_base.html',
                         security_manager_class=ModamaSecurityManager)
 
+print("Flask-Login LoginManager: {}".format(appbuilder.sm.lm))
+
+
+@appbuilder.sm.lm.request_loader
+def load_user_from_token(request):
+    log.debug("Calling request loader")
+    user = appbuilder.sm.auth_view.getUserFromAuthHeader()
+    if user is not None:
+        log.debug("Got user from header: {}".format(user))
+        return user
+    user = appbuilder.sm.auth_view.getUserFromCookie()
+    log.debug("Got user from cookie: {}".format(user))
+    return user
+
 
 """
 from sqlalchemy.engine import Engine
