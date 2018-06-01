@@ -31,21 +31,22 @@ class FormService(object):
 
     converter = FABConverter()
 
-    @staticmethod
+    @classmethod
     def currentUserViewAccess(cls, view, permission):
         if cls.getCurrentUser() is None:
             return False
         permission_str = PERMISSION_PREFIX + permission
-        return appbuilder.sm.has_access(permission_str, view.__name)
+        return appbuilder.sm.has_access(permission_str, view.__name__)
+        # return True
 
-    @staticmethod
-    def getDatasets():
+    @classmethod
+    def getDatasets(cls):
         datasets = {}
         for ds in _datasets:
             accessible_views = []
             for v in ds.mobile_views:
-                # if cls.currentUserViewAccess(v, 'add' ):
-                accessible_views.append(v)
+                if cls.currentUserViewAccess(v, 'add'):
+                    accessible_views.append(v)
             if len(accessible_views) > 0:
                 datasets[ds.name] = accessible_views
         return datasets
@@ -68,8 +69,8 @@ class FormService(object):
             raise UnkownDatasetError(
                 "Dataset {} does not exist".format(datasetname))
         for v in dataset.mobile_views:
-            if cls.converter._get_pretty_name(v, 'show') == formname:
-                # and cls.currentUserViewAccess(v, 'add' ):
+            if cls.converter._get_pretty_name(v, 'show') == formname \
+                    and cls.currentUserViewAccess(v, 'add'):
                 return v
         raise UnkownFormError(
             "No such form {} in dataset {}".format(datasetname, formname)

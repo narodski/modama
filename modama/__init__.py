@@ -6,6 +6,7 @@ from flask_migrate import Migrate
 from flask_socketio import SocketIO
 from flask_session import Session
 from modama.security.manager import ModamaSecurityManager
+from flask_cors import CORS
 
 APP_DIR = os.path.dirname(__file__)
 
@@ -29,6 +30,11 @@ except Exception as e:
     log.info("No custom config found: {}".format(e))
     pass
 
+log.info("Running in debug mode: {}".format(app.debug))
+
+if app.debug:
+    cors = CORS(app)
+
 sess = Session(app)
 db = SQLA(app)
 socketio = SocketIO(app, manage_session=False)
@@ -37,12 +43,9 @@ migrate = Migrate(app, db, directory=APP_DIR + '/migrate')
 appbuilder = AppBuilder(app, db.session, base_template='modama_base.html',
                         security_manager_class=ModamaSecurityManager)
 
-print("Flask-Login LoginManager: {}".format(appbuilder.sm.lm))
-
 
 @appbuilder.sm.lm.request_loader
 def load_user_from_token(request):
-    log.debug("Calling request loader")
     user = appbuilder.sm.auth_view.getUserFromAuthHeader()
     if user is not None:
         log.debug("Got user from header: {}".format(user))

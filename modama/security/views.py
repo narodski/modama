@@ -1,6 +1,6 @@
 from flask_appbuilder.security.views import AuthDBView
 from flask_appbuilder.security.forms import LoginForm_db
-from flask import flash, redirect, g, request, make_response
+from flask import flash, redirect, g, request, make_response, jsonify
 import jwt
 from flask_appbuilder._compat import as_unicode
 from flask_appbuilder.views import expose
@@ -10,29 +10,29 @@ from datetime import datetime, timezone, timedelta
 
 class AuthDBJWTView(AuthDBView):
 
-    @expose('/login_app/', methods=['POST'])
+    @expose('/login_app', methods=['POST', 'OPTIONS', 'GET'])
     def login_app(self):
         user = self.getUserFromAuthHeader()
         if user is not None:
             login_user(user)
-            token = self.getJWT()
-            return {'success': True, 'token': token,
-                    'message': 'Login successful'}
-        form = LoginForm_db()
+            token = self.encodeJWT(self.getJWT())
+            return jsonify({'success': True, 'token': token,
+                            'message': 'Login successful'})
+        form = LoginForm_db(csrf_enabled=False)
         if form.validate_on_submit():
             user = self.appbuilder.sm.auth_user_db(form.username.data,
                                                    form.password.data)
             if not user:
-                return {'success': False,
-                        'message': self.invalid_login_message}
+                return jsonify({'success': False,
+                                'message': self.invalid_login_message})
             login_user(user, remember=False)
-            token = self.getJWT()
-            return {'success': True, 'token': token,
-                    'message': 'Login successful'}
+            token = self.encodeJWT(self.getJWT())
+            return jsonify({'success': True, 'token': token,
+                            'message': 'Login successful'})
         else:
             message = "\n".join(["{}: {}".format(f, ";".join(e))
                                  for f, e in form.errors.items()])
-            return {'success': False, "message": message}
+            return jsonify({'success': False, "message": message})
 
     def getUserFromAuthHeader(self):
         auth_header = request.headers.get('Authorization')
@@ -73,7 +73,7 @@ class AuthDBJWTView(AuthDBView):
         config = self.appbuilder.get_app.config
         secret = config.get('JWT_SECRET')
         if token is not None:
-            return jwt.encode(token, secret, algorithm="HS256")
+            return jwt.encode(token, secret, algorithm="HS256").decode('UTF-8')
 
     def getJWT(self):
         config = self.appbuilder.get_app.config
