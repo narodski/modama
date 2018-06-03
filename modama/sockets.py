@@ -3,16 +3,17 @@ from modama.formService import FormService
 from modama.exceptions import PermissionDeniedError
 from flask_socketio import emit
 from flask import g, request
-from flask_login import login_user
+from flask_login import login_user, current_user
 import logging
 import jwt
 
 log = logging.getLogger(__name__)
 
 
-#@socketio.on_error_default
-#def error_handler(exc):
-#    log.error(exc)
+@socketio.on_error_default
+def error_handler(exc):
+    log.error(exc)
+    return {'success': False, 'message': str(exc)}
 
 
 @socketio.on('connect')
@@ -28,7 +29,7 @@ def connect():
     log.info("User {} logged in on websocket.".format(user))
     if user is not None:
         login_user(user)
-        g.user = user
+        g.user = current_user
         token = av.encodeJWT(av.getJWT())
         datasets = FormService.getDatasets()
         json_schema = FormService.getJsonSchema(datasets)
@@ -41,12 +42,17 @@ def connect():
 
 
 @socketio.on('saveData')
-def saveData(datasetname, formname, data):
-    log.info('Saving data for user {}'.format(g.user))
+def saveData(data):
+    log.info('Saving data for user {}'.format(current_user))
+    g.user = current_user
+    formname = data['form']
+    datasetname = data['dataset']
+    formdata = data['formdata']
     view = FormService.getView(datasetname, formname)
     if not FormService.currentUserViewAccess(view, 'add'):
         raise PermissionDeniedError(
             "User {} does not have add access to {}".format(
                 FormService.getCurrentUser(), view)
         )
-    FormService.storeData(datasetname, formname, data)
+    FormService.storeData(datasetname, formname, formdata)
+    return {'success': True}
