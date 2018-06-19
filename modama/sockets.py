@@ -12,7 +12,7 @@ log = logging.getLogger(__name__)
 
 @socketio.on_error_default
 def error_handler(exc):
-    log.error(exc)
+    log.exception(exc)
     return {'success': False, 'message': str(exc)}
 
 

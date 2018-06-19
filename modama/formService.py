@@ -73,7 +73,8 @@ class FormService(object):
                     and cls.currentUserViewAccess(v, 'add'):
                 return v
         raise UnkownFormError(
-            "No such form {} in dataset {}".format(datasetname, formname)
+            "No such form {} in dataset {} to which you have access".format(
+                formname, datasetname)
         )
 
     @classmethod
@@ -89,6 +90,7 @@ class FormService(object):
 
     @classmethod
     def processView(cls, view, data):
+        log.debug("Processing view {} with data {}".format(view, data))
         cols = view.add_columns
         form = cls.getForm(view, 'add')
         related_data = {}
@@ -112,7 +114,14 @@ class FormService(object):
                         pass
                     data[col] = dt.strftime(field.format)
                 elif isinstance(field, ImageUploadField):
-                    stream = BytesIO(base64.b64decode(data[col]))
+                    pos = data[col].find('base64,/')
+                    if pos > -1:
+                        bstr = data[col][pos+7:].strip()
+                    else:
+                        bstr = data[col].strip()
+                    log.debug("Image start: {}".format(bstr[:30]))
+                    log.debug("Image end: {}".format(bstr[-30:]))
+                    stream = BytesIO(base64.b64decode(bstr))
                     data[col] = FileStorage(stream=stream)
                     data[col].filename = "{}.jpg".format(filename_base)
                 field.process_formdata([data[col]])
@@ -136,7 +145,7 @@ class FormService(object):
                         continue
                     if view.datamodel.is_relation_one_to_many(attr):
                         related_data[attr] = []
-                        for val in data[attr]:
+                        for val in data[attr].values():
                             obj = cls.processView(rv, val)
                             related_data[attr].append(obj)
 
