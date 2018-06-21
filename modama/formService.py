@@ -104,7 +104,8 @@ class FormService(object):
             if col in data.keys():
                 field = getattr(form, col)
                 field.raw_data = data[col]
-                if isinstance(field, fields.IntegerField) and data[col] == '':
+                if isinstance(field, fields.IntegerField) \
+                        and (data[col] == '' or data[col] is None):
                     continue
                 elif isinstance(field, fields.DateTimeField):
                     dt = dt_parser.parse(data[col])
