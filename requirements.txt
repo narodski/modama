@@ -5,6 +5,7 @@ flask-socketio
 flask-appbuilder
 pillow
 geoalchemy2
+fab-geoalchemy
 psycopg2
 flask-migrate
 flask-script

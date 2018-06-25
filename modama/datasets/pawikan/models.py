@@ -6,6 +6,7 @@ from flask_appbuilder.models.mixins import ImageColumn, AuditMixin
 from modama.utils import make_image
 from flask_appbuilder.filemanager import ImageManager
 from flask import url_for
+from geoalchemy2 import Geometry
 
 
 class PawikanEncounterPicture(Model, AuditMixin):
@@ -93,6 +94,7 @@ class PawikanEncounter(BaseObservation):
     ccl = Column(Integer)
     sex_id = Column(Integer, ForeignKey('sex.id'))
     sex = relationship(Sex)
+    location = Column(Geometry(geometry_type='POINT', srid=4326))
 
     @property
     def num_pictures(self):
