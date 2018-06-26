@@ -3,8 +3,9 @@ from modama.datasets import _datasets
 from modama import db
 from flask import g
 from flask_appbuilder.const import PERMISSION_PREFIX
-from wtforms_jsonschema2.fab import FABConverter
+from wtforms_jsonschema2.geofab import GeoFABConverter
 from wtforms import fields
+from fab_geoalchemy import PointField
 import logging
 from modama.exceptions import (UnkownDatasetError, UnkownFormError,
                                ValidationError)
@@ -29,7 +30,7 @@ _FORMTYPES = {
 
 class FormService(object):
 
-    converter = FABConverter()
+    converter = GeoFABConverter()
 
     @classmethod
     def currentUserViewAccess(cls, view, permission):
@@ -101,8 +102,15 @@ class FormService(object):
             if c.isalnum()]).rstrip()
 
         for col in cols:
+            field = getattr(form, col)
+            log.debug("Processing field {}".format(field))
+            log.debug("With data: {}".format(data))
             if col in data.keys():
-                field = getattr(form, col)
+                if isinstance(field, PointField) and 'lat' in data[col].keys()\
+                        and 'lon' in data[col].keys():
+                    log.debug("Converting pointfield")
+                    data[col] = field._getpoint(data[col]['lat'],
+                                                data[col]['lon'])
                 field.raw_data = data[col]
                 if isinstance(field, fields.IntegerField) \
                         and (data[col] == '' or data[col] is None):
@@ -142,7 +150,7 @@ class FormService(object):
             for rv in view.related_views:
                 attrs = rv.datamodel.get_related_fks([view])
                 for attr in attrs:
-                    if attr not in data.keys():
+                    if attr not in data.keys() or data[attr] is None:
                         continue
                     if view.datamodel.is_relation_one_to_many(attr):
                         related_data[attr] = []
