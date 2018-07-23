@@ -91,7 +91,8 @@ class FormService(object):
 
     @classmethod
     def processView(cls, view, data):
-        log.debug("Processing view {} with data {}".format(view, data))
+        log.debug("Processing view {}".format(view))
+        # with data {}".format(view, data))
         cols = view.add_columns
         form = cls.getForm(view, 'add')
         related_data = {}
@@ -104,7 +105,7 @@ class FormService(object):
         for col in cols:
             field = getattr(form, col)
             log.debug("Processing field {}".format(field))
-            log.debug("With data: {}".format(data))
+            # log.debug("With data: {}".format(data))
             if col in data.keys():
                 if isinstance(field, PointField) and 'lat' in data[col].keys()\
                         and 'lon' in data[col].keys():

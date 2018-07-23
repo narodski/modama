@@ -1,4 +1,5 @@
 import logging
+import logging.config
 from flask import Flask
 from flask_appbuilder import SQLA, AppBuilder
 import os
@@ -29,6 +30,12 @@ try:
 except Exception as e:
     log.info("No custom config found: {}".format(e))
     pass
+logconfig = os.path.abspath(os.path.join(APP_DIR, '..', 'instance', 'log.ini'))
+print('Checking for {}'.format(logconfig))
+if os.path.exists(logconfig):
+    logging.config.fileConfig(logconfig)
+else:
+    print('using default log config')
 
 log.info("Running in debug mode: {}".format(app.debug))
 
