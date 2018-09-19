@@ -82,6 +82,7 @@ class PawikanSpecies(Model):
 
 
 class PawikanEncounter(BaseObservation):
+    __versioned__ = {}
 
     id = Column(Integer, ForeignKey('base_observation.id'), primary_key=True)
     species_id = Column(Integer, ForeignKey('pawikan_species.id'),

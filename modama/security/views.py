@@ -1,4 +1,4 @@
-from flask_appbuilder.security.views import AuthDBView
+from flask_appbuilder.security.views import AuthDBView, UserDBModelView
 from flask_appbuilder.security.forms import LoginForm_db
 from flask import flash, redirect, g, request, make_response, jsonify
 import jwt
@@ -6,6 +6,38 @@ from flask_appbuilder._compat import as_unicode
 from flask_appbuilder.views import expose
 from flask_login import login_user
 from datetime import datetime, timezone, timedelta
+from flask_babel import lazy_gettext
+
+
+class MyUserDBModelView(UserDBModelView):
+    """
+    Add support to organize users into organizations.
+    """
+
+    show_fieldsets = [
+        (lazy_gettext('User info'),
+         {'fields': ['username', 'active', 'roles', 'login_count', 'extra']}),
+        (lazy_gettext('Personal Info'),
+         {'fields': ['first_name', 'last_name', 'email'], 'expanded': True}),
+        (lazy_gettext('Audit Info'),
+         {'fields': ['last_login', 'fail_login_count', 'created_on',
+                     'created_by', 'changed_on', 'changed_by'],
+          'expanded': False}),
+        ]
+
+    user_show_fieldsets = [
+        (lazy_gettext('User info'),
+         {'fields': ['username', 'active', 'roles', 'login_count', 'extra']}),
+        (lazy_gettext('Personal Info'),
+         {'fields': ['first_name', 'last_name', 'email'], 'expanded': True}),
+    ]
+
+    add_columns = ['first_name', 'last_name', 'username', 'active', 'email',
+                   'organization', 'roles', 'password', 'conf_password']
+    list_columns = ['first_name', 'last_name', 'username', 'email', 'active',
+                    'organization', 'roles']
+    edit_columns = ['first_name', 'last_name', 'username', 'active', 'email',
+                    'organization', 'roles']
 
 
 class AuthDBJWTView(AuthDBView):

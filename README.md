@@ -9,7 +9,7 @@ mkvirtualenv modama
 cd modama
 pip install -r requirements.txt
 ./modama/bin/modama db upgrade
-fabmanager create-admin --app=modama
+./modama/bin/modama create_admin
 ```
 
 ## Testing

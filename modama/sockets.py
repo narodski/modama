@@ -16,10 +16,7 @@ def error_handler(exc):
     return {'success': False, 'message': str(exc)}
 
 
-@socketio.on('connect')
-def connect():
-    token = request.args.get('token')
-    log.info("Connection made with token: {} ".format(token))
+def login(token):
     av = appbuilder.sm.auth_view
     user = None
     try:
@@ -31,28 +28,43 @@ def connect():
         login_user(user)
         g.user = current_user
         token = av.encodeJWT(av.getJWT())
+        return user
+    else:
+        log.error("Could not find user from valid JWT {}".format(token))
+        return None
+
+
+@socketio.on('connect')
+def connect():
+    token = request.args.get('token')
+    log.info("Connection made with token: {} ".format(token))
+    user = login(token)
+    if user is not None:
         datasets = FormService.getDatasets()
         json_schema = FormService.getJsonSchema(datasets)
         log.info("Sending datasets %s" % json_schema)
         emit('newToken', token)
         emit('newDatasets', json_schema)
     else:
-        log.error("Could not find user from valid JWT {}".format(token))
         return False
 
 
 @socketio.on('saveData')
 def saveData(data):
-    log.info('Saving data for user {}'.format(current_user))
-    g.user = current_user
-    formname = data['form']
-    datasetname = data['dataset']
-    formdata = data['formdata']
-    view = FormService.getView(datasetname, formname)
-    if not FormService.currentUserViewAccess(view, 'add'):
-        raise PermissionDeniedError(
-            "User {} does not have add access to {}".format(
-                FormService.getCurrentUser(), view)
-        )
-    FormService.storeData(datasetname, formname, formdata)
-    return {'success': True}
+    token = request.args.get('token')
+    user = login(token)
+    if token is not None:
+        log.info('Saving data for user {}'.format(user))
+        formname = data['form']
+        datasetname = data['dataset']
+        formdata = data['formdata']
+        view = FormService.getView(datasetname, formname)
+        if not FormService.currentUserViewAccess(view, 'add'):
+            raise PermissionDeniedError(
+                "User {} does not have add access to {}".format(
+                    FormService.getCurrentUser(), view)
+            )
+        FormService.storeData(datasetname, formname, formdata)
+        return {'success': True}
+    else:
+        return False

@@ -1,8 +1,11 @@
 from __future__ import with_statement
+from sqlalchemy_continuum import make_versioned
+
 from alembic import context
 from flask_appbuilder import Base
-from sqlalchemy import engine_from_config, pool
+from sqlalchemy import engine_from_config, pool, orm
 from logging.config import fileConfig
+from modama import db
 import logging
 
 # this is the Alembic Config object, which provides
@@ -22,8 +25,8 @@ from flask import current_app
 config.set_main_option('sqlalchemy.url',
                        current_app.config.get('SQLALCHEMY_DATABASE_URI'))
 #target_metadata = current_app.extensions['migrate'].db.metadata
-target_metadata = Base.metadata
-
+#target_metadata = Base.metadata
+target_metadata = db.metadata
 # other values from the config, defined by the needs of env.py,
 # can be acquired:
 # my_important_option = config.get_main_option("my_important_option")
@@ -91,6 +94,7 @@ def run_migrations_online():
                                 poolclass=pool.NullPool)
 
     connection = engine.connect()
+    print('Tables: {}'.format([t for t in target_metadata.tables]))
     context.configure(connection=connection,
                       target_metadata=target_metadata,
                       process_revision_directives=process_revision_directives,

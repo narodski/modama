@@ -4,7 +4,7 @@ from flask_appbuilder.models.mixins import AuditMixin  # , FileColumn
 from sqlalchemy import Column, Integer, String, ForeignKey, DateTime, Boolean
 from sqlalchemy.orm import relationship
 from geoalchemy2.types import Geometry
-from flask_appbuilder.security.sqla.models import User
+from .common import MyUser
 
 
 class Sex(Model):
@@ -21,7 +21,7 @@ class BaseObservation(Model, AuditMixin):
     verified = Column(Boolean, default=False)
     observation_datetime = Column(DateTime(timezone=True), nullable=False)
     observer_id = Column(Integer, ForeignKey('ab_user.id'), nullable=False)
-    observer = relationship(User, foreign_keys=[observer_id])
+    observer = relationship(MyUser, foreign_keys=[observer_id])
     dataset = Column(String(50))
 
     __mapper_args__ = {

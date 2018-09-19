@@ -3,6 +3,7 @@ pyjwt
 flask-session
 flask-socketio
 flask-appbuilder
+flask-Babel
 pillow
 geoalchemy2
 fab-geoalchemy
@@ -12,3 +13,4 @@ flask-script
 wtforms_jsonschema2[fab]
 python-dateutil
 tzlocal
+SQLAlchemy-Continuum
