@@ -1,18 +1,18 @@
 """empty message
 
-Revision ID: 0ee330ab6f91
+Revision ID: 2de084f83244
 Revises: 
-Create Date: 2018-09-19 12:12:49.103507
+Create Date: 2018-09-19 14:59:41.356774
 
 """
 from alembic import op
 import sqlalchemy as sa
-from flask_appbuilder.models.mixins import ImageColumn
-from geoalchemy2 import Geometry
+import geoalchemy2
+import flask_appbuilder
 
 
 # revision identifiers, used by Alembic.
-revision = '0ee330ab6f91'
+revision = '2de084f83244'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -33,7 +33,7 @@ def upgrade():
     sa.Column('encounter_type_id', sa.Integer(), autoincrement=False, nullable=True),
     sa.Column('ccl', sa.Integer(), autoincrement=False, nullable=True),
     sa.Column('sex_id', sa.Integer(), autoincrement=False, nullable=True),
-    sa.Column('location', Geometry(geometry_type='POINT', srid=4326), autoincrement=False, nullable=True),
+    sa.Column('location', geoalchemy2.types.Geometry(geometry_type='POINT', srid=4326), autoincrement=False, nullable=True),
     sa.Column('transaction_id', sa.BigInteger(), autoincrement=False, nullable=False),
     sa.Column('end_transaction_id', sa.BigInteger(), nullable=True),
     sa.Column('operation_type', sa.SmallInteger(), nullable=False),
@@ -48,7 +48,7 @@ def upgrade():
     sa.Column('species', sa.String(length=255), nullable=False),
     sa.Column('common_name', sa.String(length=255), nullable=True),
     sa.Column('description', sa.Text(), nullable=True),
-    sa.Column('picture', ImageColumn(), nullable=True),
+    sa.Column('picture', flask_appbuilder.models.mixins.ImageColumn(), nullable=True),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('sex',
@@ -84,7 +84,7 @@ def upgrade():
     sa.Column('encounter_type_id', sa.Integer(), nullable=False),
     sa.Column('ccl', sa.Integer(), nullable=True),
     sa.Column('sex_id', sa.Integer(), nullable=True),
-    sa.Column('location', Geometry(geometry_type='POINT', srid=4326), nullable=True),
+    sa.Column('location', geoalchemy2.types.Geometry(geometry_type='POINT', srid=4326), nullable=True),
     sa.ForeignKeyConstraint(['encounter_type_id'], ['pawikan_encounter_type.id'], ),
     sa.ForeignKeyConstraint(['id'], ['base_observation.id'], ),
     sa.ForeignKeyConstraint(['sex_id'], ['sex.id'], ),
@@ -95,7 +95,7 @@ def upgrade():
     sa.Column('created_on', sa.DateTime(), nullable=False),
     sa.Column('changed_on', sa.DateTime(), nullable=False),
     sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('picture', ImageColumn(), nullable=True),
+    sa.Column('picture', flask_appbuilder.models.mixins.ImageColumn(), nullable=True),
     sa.Column('encounter_id', sa.Integer(), nullable=False),
     sa.Column('created_by_fk', sa.Integer(), nullable=False),
     sa.Column('changed_by_fk', sa.Integer(), nullable=False),

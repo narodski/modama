@@ -44,7 +44,7 @@ def create_admin(username='admin', firstname='admin', lastname='user',
     password = prompt_pass('Password')
     role_admin = appbuilder.sm.find_role(appbuilder.sm.auth_role_admin)
     user = appbuilder.sm.add_user(username, firstname, lastname, email,
-                                  role_admin, org, password)
+                                  role_admin, [org], password)
     if user:
         print('Admin User {0} created.'.format(username))
     else:

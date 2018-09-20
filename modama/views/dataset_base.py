@@ -1,6 +1,8 @@
 from fab_geoalchemy.views import GeoModelView
+from flask import g
 from wtforms import DateTimeField
 from ..widgets import DateTimeTZPickerWidget
+from ..models.filters import FilterM2MRelationOverlapFunction
 
 
 class BaseObservationView(GeoModelView):
@@ -13,7 +15,13 @@ class BaseObservationView(GeoModelView):
 
     edit_form_extra_fields = {'observation_datetime':
                               DateTimeField('Observation date/time',
+                                            format='%Y-%m-%d %H:%M:%S%z',
                                             widget=DateTimeTZPickerWidget())}
     add_form_extra_fields = {'observation_datetime':
                              DateTimeField('Observation date/time',
+                                           format='%Y-%m-%d %H:%M:%S%z',
                                            widget=DateTimeTZPickerWidget())}
+
+    _base_filters = [['observer.organizations',
+                      FilterM2MRelationOverlapFunction,
+                      lambda: g.user.organizations]]

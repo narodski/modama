@@ -1,7 +1,7 @@
 from flask_appbuilder.security.sqla.manager import SecurityManager
 from werkzeug.security import generate_password_hash
 from .views import AuthDBJWTView, MyUserDBModelView
-from ..models.common import MyUser, Organization
+from ..models.common import MyUser
 from flask_appbuilder import const as c
 import logging
 
@@ -14,7 +14,7 @@ class ModamaSecurityManager(SecurityManager):
     userdbmodelview = MyUserDBModelView
 
     def add_user(self, username, first_name, last_name, email,
-                 role, organization, password='', hashed_password=''):
+                 role, organizations, password='', hashed_password=''):
         try:
             user = self.user_model()
             user.first_name = first_name
@@ -27,7 +27,7 @@ class ModamaSecurityManager(SecurityManager):
                 user.password = hashed_password
             else:
                 user.password = generate_password_hash(password)
-            user.organization = organization
+            user.organizations = organizations
             self.get_session.add(user)
             self.get_session.commit()
             log.info(c.LOGMSG_INF_SEC_ADD_USER.format(username))

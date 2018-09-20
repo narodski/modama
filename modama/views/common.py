@@ -4,7 +4,6 @@ from flask_appbuilder import ModelView
 from modama import appbuilder, db
 from modama.models.dataset_base import Sex
 
-
 class SexView(ModelView):
     datamodel = SQLAInterface(Sex)
 
@@ -20,4 +19,4 @@ def page_not_found(e):
                            appbuilder=appbuilder), 404
 
 
-appbuilder.add_view(SexView, "Sexes", category="Datasets")
+appbuilder.add_view(SexView, "Sexes", category="General")

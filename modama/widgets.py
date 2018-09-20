@@ -11,7 +11,7 @@ class DateTimeTZPickerWidget(object):
     data_template = ('<div class="input-group date modama_datetime" id="datetimepicker">'
                     '<span class="input-group-addon"><i class="fa fa-calendar cursor-hand"></i>'
                     '</span>'
-                    '<input class="form-control" data-format="YYYY-MM-DD HH:mmZZ" %(text)s/>'
+                     '<input class="form-control" data-format="YYYY-MM-DD HH:mm:ssZZ" %(text)s/>'
         '</div>'
         )
 

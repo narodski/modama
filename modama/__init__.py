@@ -10,6 +10,8 @@ from modama.security.manager import ModamaSecurityManager
 from flask_cors import CORS
 from sqlalchemy import orm
 from sqlalchemy_continuum import make_versioned
+from .security.views import OrganizationView
+from flask_babel import lazy_gettext as _
 
 APP_DIR = os.path.dirname(__file__)
 
@@ -54,6 +56,11 @@ migrate = Migrate(app, db, directory=APP_DIR + '/migrate')
 appbuilder = AppBuilder(app, db.session, base_template='modama_base.html',
                         security_manager_class=ModamaSecurityManager)
 
+
+appbuilder.add_view(OrganizationView, "List Organizations",
+                    icon="fa-group", label=_("List Organizations"),
+                    category='Security', category_icon="fa-cogs",
+                    category_label=_("Security"))
 
 @appbuilder.sm.lm.request_loader
 def load_user_from_token(request):

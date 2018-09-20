@@ -1,4 +1,6 @@
 from flask_appbuilder.security.views import AuthDBView, UserDBModelView
+from flask_appbuilder import ModelView
+from flask_appbuilder.models.sqla.interface import SQLAInterface
 from flask_appbuilder.security.forms import LoginForm_db
 from flask import flash, redirect, g, request, make_response, jsonify
 import jwt
@@ -7,6 +9,14 @@ from flask_appbuilder.views import expose
 from flask_login import login_user
 from datetime import datetime, timezone, timedelta
 from flask_babel import lazy_gettext
+from modama.models.common import Organization
+
+
+class OrganizationView(ModelView):
+    datamodel = SQLAInterface(Organization)
+    list_columns = ['name']
+    edit_columns = ['name', 'users']
+    add_columns = ['name', 'users']
 
 
 class MyUserDBModelView(UserDBModelView):
@@ -33,11 +43,11 @@ class MyUserDBModelView(UserDBModelView):
     ]
 
     add_columns = ['first_name', 'last_name', 'username', 'active', 'email',
-                   'organization', 'roles', 'password', 'conf_password']
+                   'organizations', 'roles', 'password', 'conf_password']
     list_columns = ['first_name', 'last_name', 'username', 'email', 'active',
-                    'organization', 'roles']
+                    'organizations', 'roles']
     edit_columns = ['first_name', 'last_name', 'username', 'active', 'email',
-                    'organization', 'roles']
+                    'organizations', 'roles']
 
 
 class AuthDBJWTView(AuthDBView):
