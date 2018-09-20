@@ -7,6 +7,7 @@ import jwt
 from flask_appbuilder._compat import as_unicode
 from flask_appbuilder.views import expose
 from flask_login import login_user
+from flask import Response
 from datetime import datetime, timezone, timedelta
 from flask_babel import lazy_gettext
 from modama.models.common import Organization
@@ -130,6 +131,12 @@ class AuthDBJWTView(AuthDBView):
             payload.update(base_payload)
             return payload
         return None
+
+    @expose('/logout/')
+    def logout(self):
+        resp = super(AuthDBJWTView, self).logout()
+        resp.delete_cookie('modama_jwt')
+        return resp
 
     @expose('/login/', methods=['GET', 'POST'])
     def login(self):

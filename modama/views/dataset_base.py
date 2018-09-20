@@ -1,8 +1,8 @@
 from fab_geoalchemy.views import GeoModelView
-from flask import g
 from wtforms import DateTimeField
 from ..widgets import DateTimeTZPickerWidget
 from ..models.filters import FilterM2MRelationOverlapFunction
+from modama import appbuilder
 
 
 class BaseObservationView(GeoModelView):
@@ -24,4 +24,4 @@ class BaseObservationView(GeoModelView):
 
     base_filters = [['observer.organizations',
                      FilterM2MRelationOverlapFunction,
-                     lambda: g.user.organizations]]
+                     appbuilder.sm.my_organizations]]
