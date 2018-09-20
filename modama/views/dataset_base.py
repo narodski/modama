@@ -22,6 +22,6 @@ class BaseObservationView(GeoModelView):
                                            format='%Y-%m-%d %H:%M:%S%z',
                                            widget=DateTimeTZPickerWidget())}
 
-    _base_filters = [['observer.organizations',
-                      FilterM2MRelationOverlapFunction,
-                      lambda: g.user.organizations]]
+    base_filters = [['observer.organizations',
+                     FilterM2MRelationOverlapFunction,
+                     lambda: g.user.organizations]]

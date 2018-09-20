@@ -56,8 +56,6 @@ class PawikanEncounterView(BaseObservationView):
     add_title = "Add Encounter"
     show_title = "Encounter"
 
-    base_filters = BaseObservationView._base_filters
-
 
 class PawikanSpeciesView(ModelView):
     _pretty_name = 'Species'
