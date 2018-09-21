@@ -28,12 +28,18 @@ def shell():
 
 
 @manager.command
-def create_admin(username='admin', firstname='admin', lastname='user',
-                 email='admin@fab.org'):
-    username = prompt('Username', default=username)
-    firstname = prompt('Firstname', default=firstname)
-    lastname = prompt('Lastname', default=lastname)
-    email = prompt('Email', default=email)
+def create_admin(username=None, firstname=None, lastname=None,
+                 email=None, password=None):
+    if username is None:
+        username = prompt('Username', default='admin')
+    if firstname is None:
+        firstname = prompt('Firstname', default='admin')
+    if lastname is None:
+        lastname = prompt('Lastname', default='user')
+    if email is None:
+        email = prompt('Email', default='admin@fab.org')
+    if password is None:
+        password = prompt_pass('Password')
     try:
         q = db.session.query(common.Organization)
         org = q.filter_by(name='Admins').one()
@@ -41,7 +47,6 @@ def create_admin(username='admin', firstname='admin', lastname='user',
         org = common.Organization(name='Admins')
         db.session.add(org)
         db.session.commit()
-    password = prompt_pass('Password')
     role_admin = appbuilder.sm.find_role(appbuilder.sm.auth_role_admin)
     user = appbuilder.sm.add_user(username, firstname, lastname, email,
                                   role_admin, [org], password)
