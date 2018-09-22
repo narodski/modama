@@ -1,5 +1,6 @@
 eventlet
 pyjwt
+flask-cors
 flask-session
 flask-socketio
 flask-appbuilder

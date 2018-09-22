@@ -14,7 +14,7 @@ class PawikanEncounterPictureView(ModelView):
     edit_columns = ['picture']
     show_columns = ['picture_img',
                     'created_on', 'created_by', 'changed_on', 'changed_by']
-    add_columns = ['picture']
+    add_columns = ['picture', "encounter"]
     list_columns = ['picture_img_thumbnail', 'changed_on', 'changed_by']
     list_title = 'Pictures'
     show_title = 'Picture'
