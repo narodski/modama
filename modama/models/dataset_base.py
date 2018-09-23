@@ -1,10 +1,13 @@
 from flask_appbuilder import Model
 from flask_appbuilder.models.mixins import AuditMixin  # , FileColumn
+from .common import ModamaAuditMixin
 # from flask_appbuilder.models.mixins import ImageColumn
 from sqlalchemy import Column, Integer, String, ForeignKey, DateTime, Boolean
 from sqlalchemy.orm import relationship
 from geoalchemy2.types import Geometry
 from .common import MyUser
+from sqlalchemy.dialects.postgresql import UUID
+import uuid
 
 
 class Sex(Model):
@@ -15,13 +18,16 @@ class Sex(Model):
         return self.name
 
 
-class BaseObservation(Model, AuditMixin):
+class BaseObservation(Model, ModamaAuditMixin):
     id = Column(Integer, primary_key=True)
     # location = Column(Geometry(geometry_type='POINT', srid=4326))
     verified = Column(Boolean, default=False)
     observation_datetime = Column(DateTime(timezone=True), nullable=False)
-    observer_id = Column(Integer, ForeignKey('ab_user.id'), nullable=False)
-    observer = relationship(MyUser, foreign_keys=[observer_id])
+    report_id = Column(UUID(as_uuid=True), unique=True, nullable=False,
+                       default=uuid.uuid1())
+    device_id = Column(String(50), unique=False, nullable=False,
+                       default='webinterface')
+    reporter = Column(String(255))
     dataset = Column(String(50))
 
     __mapper_args__ = {

@@ -35,7 +35,7 @@ class PawikanStrandingView(BaseObservationView):
         BaseObservationView._base_add
     show_columns = ['species', 'ccl',
                     'sex', 'num_pictures'] + BaseObservationView._base_show
-    search_exclude_columns = ['location']
+    search_exclude_columns = ['location', 'report_id', 'device_id']
     validators_columns = {
         'ccl': [
             NumberRange(min=50, max=250,

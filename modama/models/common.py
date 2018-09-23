@@ -1,9 +1,9 @@
 from flask_appbuilder import Model
-# from flask_appbuilder.models.mixins import AuditMixin, FileColumn
-# from flask_appbuilder.models.mixins import ImageColumn
+from flask_appbuilder.models.mixins import AuditMixin
 from sqlalchemy import Column, Integer, String, ForeignKey, Table
 from sqlalchemy.orm import relationship
 from flask_appbuilder.security.sqla.models import User
+from sqlalchemy.ext.declarative import declared_attr
 """
 
 You can use the extra Flask-AppBuilder fields and Mixin's
@@ -19,6 +19,20 @@ user_organization_table = Table('ab_user_organization', Model.metadata,
                                 Column('organization_id', Integer,
                                        ForeignKey('ab_organization.id'))
                                 )
+
+
+class ModamaAuditMixin(AuditMixin):
+    @declared_attr
+    def created_by(cls):
+        return relationship("MyUser",
+                            primaryjoin='{}.created_by_fk == MyUser.id'.format(
+                                cls.__name__), enable_typechecks=False)
+
+    @declared_attr
+    def changed_by(cls):
+        return relationship("MyUser",
+                            primaryjoin='{}.changed_by_fk == MyUser.id'.format(
+                                cls.__name__), enable_typechecks=False)
 
 
 class Organization(Model):

@@ -90,3 +90,4 @@ from modama.views import common
 from modama import datasets
 from modama import sockets
 orm.configure_mappers()
+appbuilder.sm.get_session.close()

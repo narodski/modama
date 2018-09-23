@@ -3,13 +3,14 @@ from sqlalchemy import Column, Integer, String, ForeignKey, Numeric, Text
 from sqlalchemy.orm import relationship
 from modama.models.dataset_base import BaseObservation, Sex
 from flask_appbuilder.models.mixins import ImageColumn, AuditMixin
+from modama.models.common import ModamaAuditMixin
 from modama.utils import make_image
 from flask_appbuilder.filemanager import ImageManager
 from flask import url_for
 from geoalchemy2 import Geometry
 
 
-class PawikanEncounterPicture(Model, AuditMixin):
+class PawikanEncounterPicture(Model, ModamaAuditMixin):
     id = Column(Integer, primary_key=True)
     picture = Column(ImageColumn(size=(2048, 2048, False),
                                  thumbnail_size=(800, 800, True)))

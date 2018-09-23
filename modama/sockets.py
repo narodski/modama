@@ -58,6 +58,8 @@ def saveData(data):
         formname = data['form']
         datasetname = data['dataset']
         formdata = data['formdata']
+        formdata['device_id'] = data['device_id']
+        formdata['report_id'] = data['report_id']
         view = FormService.getView(datasetname, formname)
         if not FormService.currentUserViewAccess(view, 'add'):
             raise PermissionDeniedError(

@@ -163,6 +163,11 @@ class FormService(object):
         for k, v in related_data.items():
             setattr(instance, k, v)
 
+        # Separately add device_id and report_id even if theyre not in the form
+        if(hasattr(instance, 'report_id') and 'report_id' in data.keys()):
+            instance.report_id = data['report_id']
+        if(hasattr(instance, 'device_id') and 'device_id' in data.keys()):
+            instance.device_id = data['device_id']
         return instance
 
     @classmethod
