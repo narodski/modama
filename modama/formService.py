@@ -116,7 +116,8 @@ class FormService(object):
                 if isinstance(field, fields.IntegerField) \
                         and (data[col] == '' or data[col] is None):
                     continue
-                elif isinstance(field, fields.DateTimeField):
+                elif isinstance(field, fields.DateTimeField)\
+                        and data[col] is not None:
                     dt = dt_parser.parse(data[col])
                     try:
                         dt = dt.astimezone(get_localzone())

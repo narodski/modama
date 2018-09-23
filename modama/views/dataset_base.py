@@ -1,5 +1,5 @@
 from fab_geoalchemy.views import GeoModelView
-from wtforms import DateTimeField
+from wtforms import DateTimeField, validators
 from ..widgets import DateTimeTZPickerWidget
 from ..models.filters import FilterM2MRelationOverlapFunction
 from modama import appbuilder
@@ -15,10 +15,12 @@ class BaseObservationView(GeoModelView):
 
     edit_form_extra_fields = {'observation_datetime':
                               DateTimeField('Observation date/time',
+                                            validators=[validators.required()],
                                             format='%Y-%m-%d %H:%M:%S%z',
                                             widget=DateTimeTZPickerWidget())}
     add_form_extra_fields = {'observation_datetime':
                              DateTimeField('Observation date/time',
+                                           validators=[validators.required()],
                                            format='%Y-%m-%d %H:%M:%S%z',
                                            widget=DateTimeTZPickerWidget())}
 
