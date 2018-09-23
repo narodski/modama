@@ -58,9 +58,10 @@ def create_admin(username=None, firstname=None, lastname=None,
 
 @manager.command
 def load_base_data():
-    db.session.add(dataset_base.Sex(name='Male'))
-    db.session.add(dataset_base.Sex(name='Female'))
-    db.session.commit()
+    if db.session.query(dataset_base.Sex).count() == 0:
+        db.session.add(dataset_base.Sex(name='Male'))
+        db.session.add(dataset_base.Sex(name='Female'))
+        db.session.commit()
     for ds in _datasets:
         ds.load_base_data()
         db.session.commit()
