@@ -11,6 +11,9 @@ from flask import Response
 from datetime import datetime, timezone, timedelta
 from flask_babel import lazy_gettext
 from modama.models.common import Organization
+import logging
+
+log = logging.getLogger(__name__)
 
 
 class OrganizationView(ModelView):
@@ -107,7 +110,12 @@ class AuthDBJWTView(AuthDBView):
         """
         config = self.appbuilder.get_app.config
         secret = config.get('JWT_SECRET')
-        payload = jwt.decode(token, secret, algorithms='HS256')
+        try:
+            payload = jwt.decode(token, secret, algorithms='HS256')
+        except jwt.exceptions.InvalidSignatureError:
+            userid = jwt.decode(token, verify=False)['user']['id']
+            log.warning("Invalid token found for user {}".format(userid))
+            return None
         userid = payload['user']['id']
         user = self.appbuilder.sm.get_user_by_id(userid)
         return user

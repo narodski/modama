@@ -1,4 +1,5 @@
 from flask_appbuilder import SimpleFormView
+import jwt
 from flask import request
 from flask_wtf.file import FileField, FileRequired, FileAllowed
 from werkzeug.utils import secure_filename
@@ -50,7 +51,7 @@ class UploadView(SimpleFormView):
                     continue
                 log.debug('Got data {}'.format(jf))
                 req = set(['form', 'dataset', 'report_id', 'formdata',
-                           'user_id', 'device_id'])
+                           'token', 'device_id'])
                 if not req <= set(jf.keys()):
                     log.error('Not all required keys are available in {}.'
                               .format(rf))
@@ -59,14 +60,14 @@ class UploadView(SimpleFormView):
                     continue
                 formname = jf['form']
                 datasetname = jf['dataset']
+                user = appbuilder.sm.auth_view.getUserFromJWT(jf['token'])
                 formdata = jf['formdata']
                 formdata['report_id'] = jf['report_id']
                 formdata['device_id'] = jf['device_id']
-                userid = int(jf['user_id'])
+                userid = jwt.decode(jf['token'], verify=False)['user']['id']
                 args = {'formname': formname, 'rf': rf,
                         'reportid': jf['report_id'],
                         'userid': userid}
-                user = db.session.query(MyUser).get(userid)
                 if user is None:
                     flash("User {userid} not found in report {reportid}"
                           .format(**args), 'danger')
