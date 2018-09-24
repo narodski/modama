@@ -62,6 +62,7 @@ appbuilder.add_view(OrganizationView, "List Organizations",
                     category='Security', category_icon="fa-cogs",
                     category_label=_("Security"))
 
+
 @appbuilder.sm.lm.request_loader
 def load_user_from_token(request):
     user = appbuilder.sm.auth_view.getUserFromAuthHeader()
@@ -89,5 +90,6 @@ def set_sqlite_pragma(dbapi_connection, connection_record):
 from modama.views import common
 from modama import datasets
 from modama import sockets
+from modama.views import upload
 orm.configure_mappers()
 appbuilder.sm.get_session.close()
