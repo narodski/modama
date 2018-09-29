@@ -15,4 +15,4 @@ wtforms_jsonschema2[fab]
 python-dateutil
 tzlocal
 SQLAlchemy-Continuum
-weasyprint
+flask_weasyprint
