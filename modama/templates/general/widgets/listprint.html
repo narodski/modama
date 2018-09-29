@@ -1,0 +1,40 @@
+{% import 'appbuilder/general/lib.html' as lib %}
+{% extends 'general/widgets/base_print_list.html' %}
+
+    {% block begin_content scoped %}
+        <div class="table-responsive">
+        <table class="table table-bordered table-hover">
+    {% endblock %}
+
+    {% block begin_loop_header scoped %}
+        <thead>
+        <tr>
+
+        {% for item in include_columns %}
+          <th>{{label_columns.get(item)}}</th>
+        {% endfor %}
+        </tr>
+        </thead>
+    {% endblock %}
+
+    {% block begin_loop_values %}
+        {% for item in value_columns %}
+            {% set pk = pks[loop.index-1] %}
+            <tr>
+                {% for value in include_columns %}
+                    {% set formatter = formatters_columns.get(value) %}
+                    {% if formatter %}
+                        <td>{{ formatter(item[value]) }}</td>
+                    {% else %}
+                        <td>{{ item[value]|safe }}</td>
+                    {% endif %}
+                {% endfor %}
+            </tr>
+        {% endfor %}
+    {% endblock %}
+
+    {% block end_content scoped %}
+        </table>
+        </div>
+    {% endblock %}
+
