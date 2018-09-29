@@ -1,7 +1,7 @@
 from flask_appbuilder.models.sqla.interface import SQLAInterface
 from flask_appbuilder import ModelView
 from modama import appbuilder
-from modama.views.dataset_base import BaseObservationView
+from modama.views.dataset_base import BaseObservationView, BaseVerificationView
 from wtforms.validators import NumberRange
 from .models import PawikanEncounterType, PawikanSpecies, PawikanEncounter
 from .models import PawikanEncounterPicture
@@ -37,12 +37,13 @@ class PawikanEncounterView(BaseObservationView):
     list_columns = ['created_on', 'created_by', 'species', 'encounter_type',
                     'ccl', 'sex', 'num_pictures'] +\
         BaseObservationView._base_list
-    edit_columns = ['species', 'encounter_type', 'ccl', 'sex', 'location'] +\
-        BaseObservationView._base_edit
-    add_columns = ['species', 'encounter_type', 'ccl', 'sex', 'location'] +\
-        BaseObservationView._base_add
-    show_columns = ['species', 'encounter_type', 'ccl',
-                    'sex', 'num_pictures'] + BaseObservationView._base_show
+    edit_columns = BaseObservationView._base_edit +\
+        ['species', 'encounter_type', 'ccl', 'sex', 'location']
+    add_columns = BaseObservationView._base_add +\
+        ['species', 'encounter_type', 'ccl', 'sex', 'location']
+    show_columns = BaseObservationView._base_show +\
+        ['species', 'encounter_type', 'ccl', 'sex', 'num_pictures']
+
     search_exclude_columns = ['location', 'report_id', 'device_id']
     validators_columns = {
         'ccl': [
@@ -52,6 +53,34 @@ class PawikanEncounterView(BaseObservationView):
     }
     related_views = [PawikanEncounterPictureView]
     list_title = "Encounters"
+    edit_title = "Edit Encounter"
+    add_title = "Add Encounter"
+    show_title = "Encounter"
+
+
+class PawikanVerificationView(BaseVerificationView):
+    __pretty_name = 'Verification'
+    datamodel = GeoSQLAInterface(PawikanEncounter)
+    label_columns = {'num_pictures': 'Number Of Pictures'}
+
+    edit_columns = BaseVerificationView._base_edit +\
+        ['species', 'encounter_type', 'ccl', 'sex', 'location']
+    show_columns = BaseVerificationView._base_show +\
+        ['species', 'encounter_type', 'ccl', 'sex', 'num_pictures']
+    list_columns = BaseVerificationView._base_list +\
+        ['created_on', 'created_by', 'species', 'encounter_type', 'ccl',
+         'sex', 'num_pictures']
+
+    search_exclude_columns = ['location', 'report_id', 'device_id']
+    validators_columns = {
+        'ccl': [
+            NumberRange(min=50, max=250,
+                        message='CCL should be between 50cm and 250cm')
+        ]
+    }
+
+    related_views = [PawikanEncounterPictureView]
+    list_title = "Unverified Encounters"
     edit_title = "Edit Encounter"
     add_title = "Add Encounter"
     show_title = "Encounter"
@@ -73,6 +102,8 @@ class PawikanSpeciesView(ModelView):
 
 
 appbuilder.add_view(PawikanEncounterView, "Encounters", category="Pawikan")
+appbuilder.add_view(PawikanVerificationView, "Verify Encounters",
+                    category="Pawikan")
 appbuilder.add_view(PawikanEncounterPictureView, "Pictures",
                     category="Pawikan")
 appbuilder.add_view(PawikanSpeciesView, "Species", category="Pawikan")

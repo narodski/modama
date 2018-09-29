@@ -1,11 +1,7 @@
 from flask_appbuilder import Model
-from flask_appbuilder.models.mixins import AuditMixin  # , FileColumn
 from .common import ModamaAuditMixin
 # from flask_appbuilder.models.mixins import ImageColumn
-from sqlalchemy import Column, Integer, String, ForeignKey, DateTime, Boolean
-from sqlalchemy.orm import relationship
-from geoalchemy2.types import Geometry
-from .common import MyUser
+from sqlalchemy import Column, Integer, String, DateTime, Boolean
 from sqlalchemy.dialects.postgresql import UUID
 import uuid
 
@@ -27,7 +23,8 @@ class BaseObservation(Model, ModamaAuditMixin):
                        default=uuid.uuid1())
     device_id = Column(String(50), unique=False, nullable=False,
                        default='webinterface')
-    reporter = Column(String(255))
+    reporter = Column(String(255), nullable=False)
+    reporter_contact = Column(String(255), nullable=False)
     dataset = Column(String(50))
 
     __mapper_args__ = {
