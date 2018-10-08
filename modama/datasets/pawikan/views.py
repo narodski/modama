@@ -3,9 +3,10 @@ from flask_appbuilder import ModelView
 from modama import appbuilder
 from modama.views.dataset_base import BaseObservationView, BaseVerificationView
 from wtforms.validators import NumberRange
-from .models import PawikanEncounterType, PawikanSpecies, PawikanEncounter
-from .models import PawikanEncounterPicture
-from fab_geoalchemy.interface import GeoSQLAInterface
+from .models import (PawikanSpecies, PawikanEncounter,
+                     PawikanEncounterPicture, PawikanStranding)
+from fab_addon_geoalchemy.models import GeoSQLAInterface
+from wtforms_jsonschema2.conditions import oneOf
 
 
 class PawikanEncounterPictureView(ModelView):
@@ -14,7 +15,7 @@ class PawikanEncounterPictureView(ModelView):
     edit_columns = ['picture']
     show_columns = ['picture_img',
                     'created_on', 'created_by', 'changed_on', 'changed_by']
-    add_columns = ['picture', "encounter"]
+    add_columns = ['picture', 'encounter']
     list_columns = ['picture_img_thumbnail', 'changed_on', 'changed_by']
     list_title = 'Pictures'
     show_title = 'Picture'
@@ -22,12 +23,17 @@ class PawikanEncounterPictureView(ModelView):
     add_title = 'Add Picture'
 
 
-class PawikanEncounterTypeView(ModelView):
-    _pretty_name = 'Encounter Type'
-    datamodel = SQLAInterface(PawikanEncounterType)
-    list_columns = ['name', 'description']
-    edit_columns = ['name', 'description']
-    add_columns = ['name', 'description']
+class PawikanStrandingView(ModelView):
+    _pretty_name = 'Stranding'
+    datamodel = GeoSQLAInterface(PawikanStranding)
+    add_columns = ['alive', 'encounter']
+    show_columns = ['alive']
+    list_columns = ['alive']
+    edit_columns = ['alive']
+    show_title = 'Stranding'
+    edit_title = 'Edit Stranding'
+    add_title = 'Add Stranding'
+    list_title = 'Strandings'
 
 
 class PawikanEncounterView(BaseObservationView):
@@ -51,11 +57,17 @@ class PawikanEncounterView(BaseObservationView):
                         message='CCL should be between 50cm and 250cm')
         ]
     }
-    related_views = [PawikanEncounterPictureView]
+    related_views = [PawikanEncounterPictureView, PawikanStrandingView]
     list_title = "Encounters"
     edit_title = "Edit Encounter"
     add_title = "Add Encounter"
     show_title = "Encounter"
+
+    _conditional_relations = [
+        oneOf({
+            PawikanStrandingView: {'encounter_type': 'Stranding'},
+        })
+    ]
 
 
 class PawikanVerificationView(BaseVerificationView):
@@ -102,10 +114,9 @@ class PawikanSpeciesView(ModelView):
 
 
 appbuilder.add_view(PawikanEncounterView, "Encounters", category="Pawikan")
+appbuilder.add_view(PawikanStrandingView, "Strandings", category="Pawikan")
 appbuilder.add_view(PawikanVerificationView, "Verify Encounters",
                     category="Pawikan")
 appbuilder.add_view(PawikanEncounterPictureView, "Pictures",
                     category="Pawikan")
 appbuilder.add_view(PawikanSpeciesView, "Species", category="Pawikan")
-appbuilder.add_view(PawikanEncounterTypeView, "Encounter Types",
-                    category="Pawikan")

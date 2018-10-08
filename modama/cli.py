@@ -21,9 +21,6 @@ manager.add_command('db', MigrateCommand)
 @manager.command
 def shell():
     import code
-    #ctx = app.app_context()
-    #ctx.push()
-    #code.interact(local={'ctx': ctx})
     code.interact()
 
 

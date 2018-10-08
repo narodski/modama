@@ -5,7 +5,7 @@ from flask import g
 from flask_appbuilder.const import PERMISSION_PREFIX
 from wtforms_jsonschema2.geofab import GeoFABConverter
 from wtforms import fields
-from fab_geoalchemy import PointField
+from fab_addon_geoalchemy.fields import PointField
 import logging
 from modama.exceptions import (UnkownDatasetError, UnkownFormError,
                                ValidationError)
@@ -80,7 +80,7 @@ class FormService(object):
 
     @classmethod
     def getCurrentUser(cls):
-        if g.user is not None and g.user.is_authenticated():
+        if g.user is not None and g.user.is_authenticated:
             return g.user
         else:
             return None

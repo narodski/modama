@@ -3,11 +3,10 @@ pyjwt
 flask-cors
 flask-session
 flask-socketio
-flask-appbuilder
+-e git://github.com/dolfandringa/Flask-AppBuilder@develop#egg=flask-appbuilder
 flask-Babel
 pillow
-geoalchemy2
-fab-geoalchemy
+fab-addon-geoalchemy
 psycopg2
 flask-migrate
 flask-script

@@ -134,7 +134,7 @@ class AuthDBJWTView(AuthDBView):
             valid_until = datetime.now(timezone.utc) + \
                 timedelta(hours=expiration)
             base_payload['exp'] = valid_until
-        if g.user is not None and g.user.is_authenticated():
+        if g.user is not None and g.user.is_authenticated:
             payload = {'user': {'id': g.user.id, 'username': g.user.username}}
             payload.update(base_payload)
             return payload

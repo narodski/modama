@@ -1,4 +1,4 @@
-from fab_geoalchemy.views import GeoModelView
+from fab_addon_geoalchemy.views import GeoModelView
 from datetime import datetime
 from wtforms import DateTimeField, validators, TextField
 from ..widgets import DateTimeTZPickerWidget, ROTextFieldWidget

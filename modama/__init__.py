@@ -32,7 +32,7 @@ try:
     d = dict([(k, v) for k, v in config.__dict__.items()
               if not k.startswith('_')])
     app.config.update(d)
-except Exception as e:
+except ImportError as e:
     log.info("No custom config found: {}".format(e))
     pass
 logconfig = os.path.abspath(os.path.join(APP_DIR, '..', 'instance', 'log.ini'))

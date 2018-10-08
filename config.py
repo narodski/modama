@@ -9,7 +9,7 @@
 ##########################################################################
 
 import os
-from flask_appbuilder.security.manager import AUTH_OID, AUTH_REMOTE_USER, AUTH_DB, AUTH_LDAP, AUTH_OAUTH
+from flask_appbuilder.security.manager import AUTH_DB
 basedir = os.path.abspath(os.path.dirname(__file__))
 
 # Your App secret key
@@ -29,6 +29,7 @@ SESSION_FILE_DIR = 'instance/session/'
 REMEMBER_COOKIE_SECURE = True
 SESSION_COOKIE_HTTPONLY = True
 REMEMBER_COOKIE_HTTPONLY = True
+ADDON_MANAGERS = ['fab_addon_geoalchemy.manager.GeoAlchemyManager']
 
 JWT_SECRET = "changeme"
 JWT_EXPIRATION_HOURS = 24*60

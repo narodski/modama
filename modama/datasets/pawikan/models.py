@@ -1,13 +1,14 @@
 from flask_appbuilder import Model
-from sqlalchemy import Column, Integer, String, ForeignKey, Numeric, Text
+from sqlalchemy import (Column, Integer, String, ForeignKey, Text, Enum,
+                        Boolean)
 from sqlalchemy.orm import relationship
 from modama.models.dataset_base import BaseObservation, Sex
-from flask_appbuilder.models.mixins import ImageColumn, AuditMixin
+from flask_appbuilder.models.mixins import ImageColumn
 from modama.models.common import ModamaAuditMixin
 from modama.utils import make_image
 from flask_appbuilder.filemanager import ImageManager
 from flask import url_for
-from geoalchemy2 import Geometry
+from fab_addon_geoalchemy.models import Geometry
 
 
 class PawikanEncounterPicture(Model, ModamaAuditMixin):
@@ -36,15 +37,6 @@ class PawikanEncounterPicture(Model, ModamaAuditMixin):
                               link_url, alt)
         else:
             return make_image(None, link_url, alt)
-
-
-class PawikanEncounterType(Model):
-    id = Column(Integer, primary_key=True)
-    name = Column(String(50), nullable=False, unique=True)
-    description = Column(String(255))
-
-    def __repr__(self):
-        return self.name
 
 
 class PawikanSpecies(Model):
@@ -82,6 +74,16 @@ class PawikanSpecies(Model):
             return "%s %s" % (self.genus, self.species)
 
 
+class PawikanStranding(Model):
+
+    id = Column(Integer, primary_key=True)
+    alive = Column(Boolean, nullable=False)
+    encounter_id = Column(Integer, ForeignKey('pawikan_encounter.id'),
+                          nullable=False)
+    encounter = relationship('PawikanEncounter', back_populates='stranding',
+                             uselist=False)
+
+
 class PawikanEncounter(BaseObservation):
     __versioned__ = {}
 
@@ -89,14 +91,14 @@ class PawikanEncounter(BaseObservation):
     species_id = Column(Integer, ForeignKey('pawikan_species.id'),
                         nullable=False)
     species = relationship(PawikanSpecies, backref='encounters')
-    encounter_type_id = Column(Integer,
-                               ForeignKey('pawikan_encounter_type.id'),
-                               nullable=False)
-    encounter_type = relationship('PawikanEncounterType', backref='encounters')
+    encounter_type = Column(Enum('Stranding', 'Fisheries bycatch',
+                                 'Nesting'), nullable=False)
     ccl = Column(Integer)
     sex_id = Column(Integer, ForeignKey('sex.id'))
     sex = relationship(Sex)
     location = Column(Geometry(geometry_type='POINT', srid=4326))
+    stranding = relationship(PawikanStranding, back_populates='encounter',
+                             uselist=False)
 
     @property
     def num_pictures(self):
