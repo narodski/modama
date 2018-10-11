@@ -9,6 +9,42 @@ from modama.utils import make_image
 from flask_appbuilder.filemanager import ImageManager
 from flask import url_for
 from fab_addon_geoalchemy.models import Geometry
+import enum
+
+
+class PawikanYesNoEnum(enum.Enum):
+    yes = 'yes'
+    no = 'no'
+
+
+class PawikanBlackWhiteEnum(enum.Enum):
+    black = 'black'
+    white = 'white'
+
+
+class PawikanTagOriginEnum(enum.Enum):
+    foreign = 'foreign'
+    philippine = 'philippine'
+
+
+class PawikanAliveDeadEnum(enum.Enum):
+    alive = 'alive'
+    dead = 'dead'
+
+
+class PawikanTradeUnitEnum(enum.Enum):
+    kgs = "kgs"
+    pieces = "pieces"
+
+
+class PawikanStrandingCodeEnum(enum.Enum):
+    code1 = "CODE 1"
+    code2 = "CODE 2"
+    code3 = "CODE 3"
+    code4 = "CODE 4"
+    code5 = "CODE 5"
+    code6 = "CODE 6"
+    code7 = "CODE 7"
 
 
 class PawikanGeneralPicture(Model, ModamaAuditMixin):
@@ -49,7 +85,7 @@ class PawikanSpecies(Model):
                                  thumbnail_size=(100, 100, True)))
 
     __table_args__ = (UniqueConstraint('genus', 'species',
-                                       name='scientific_name_uc'))
+                                       name='scientific_name_uc'),)
 
     def picture_img(self):
         im = ImageManager()
@@ -128,7 +164,7 @@ class PawikanGeneral(BaseObservation):
                                nullable=False)
     encounter_type = relationship(PawikanEncounterType,
                                   backref='general_reports')
-    alive = Column(Enum('Alive', 'Dead'), nullable=False)
+    alive = Column(Enum(PawikanYesNoEnum), nullable=False)
     location = Column(Geometry(geometry_type='POINT', srid=4326))
     location_type_id = Column(Integer, ForeignKey('pawikan_location_type.id'),
                               nullable=False)
@@ -138,7 +174,7 @@ class PawikanGeneral(BaseObservation):
 
     stranding = relationship("PawikanStranding", back_populates='general',
                              uselist=False)
-    inwater = relationship("PawikanInwater", back_populates='general',
+    inwater = relationship("PawikanInWater", back_populates='general',
                            uselist=False)
     tagging = relationship("PawikanTagging", back_populates='general',
                            uselist=False)
@@ -167,7 +203,7 @@ class PawikanGeneral(BaseObservation):
     origin_of_report = Column(Text)
     report_generator = Column(Text)
 
-    tagged = Column(Enum("Yes", "No"), nullable=False, default="No")
+    tagged = Column(Enum(PawikanYesNoEnum), nullable=False, default="No")
 
     outcome_id = Column(Integer, ForeignKey('pawikan_outcome.id'))
     outcome = relationship(PawikanOutcome, backref="general_reports")
@@ -192,8 +228,7 @@ class PawikanStranding(Model):
     general = relationship('PawikanGeneral', back_populates='stranding',
                            uselist=False)
 
-    stranding_code = Column(Enum('CODE 1', 'CODE 2', 'CODE 3', 'CODE 4',
-                                 'CODE 5', 'CODE 6'), nullable=False)
+    stranding_code = Column(Enum(PawikanStrandingCodeEnum), nullable=False)
 
     turtle_disposition_id = Column(
         Integer,
@@ -206,8 +241,8 @@ class PawikanStranding(Model):
     suspected_cause = relationship(PawikanStrandingCause)
     confirmed_cause = Column(Text)
     cause_confirmed_by = Column(Text)
-    sample_collected = Column(Enum('Yes', 'No'), nullable=False)
-    necropsy_conducted = Column(Enum('Yes', 'No'), nullable=False)
+    sample_collected = Column(Enum(PawikanYesNoEnum), nullable=False)
+    necropsy_conducted = Column(Enum(PawikanYesNoEnum), nullable=False)
     necropsy_carried_out_by = Column(Text)
 
 
@@ -275,7 +310,7 @@ class PawikanTagging(Model):
     general = relationship('PawikanGeneral', back_populates='tagging',
                            uselist=False)
 
-    existing_tags_origin = Column(Enum('Foreign', 'Philippine'),
+    existing_tags_origin = Column(Enum(PawikanTagOriginEnum),
                                   nullable=False)
     existing_tags_left = Column(Text)
     existing_tags_right = Column(Text)
@@ -324,7 +359,7 @@ class PawikanNestWithEgg(Model):
                              ForeignKey('pawikan_nesting_action_taken.id'))
     action_taken = relationship(PawikanNestingActionTaken,
                                 backref="nest_encounters")
-    area_secure = Column(Enum("Yes", "No"))
+    area_secure = Column(Enum(PawikanYesNoEnum))
 
 
 class PawikanNestEvaluation(Model):
@@ -334,7 +369,7 @@ class PawikanNestEvaluation(Model):
     general = relationship('PawikanGeneral', back_populates='nest_evaluation',
                            uselist=True)
 
-    number_of_eggs_known = Column(Enum("Yes", "No"), nullable=False)
+    number_of_eggs_known = Column(Enum(PawikanYesNoEnum), nullable=False)
     nest_id = Column(String)
 
     num_eggs_s = Column(Integer)
@@ -402,17 +437,17 @@ class PawikanHatchlings(Model):
     general = relationship('PawikanGeneral', back_populates='hatchlings',
                            uselist=False)
 
-    hatchery_nest = Column(Enum("Yes", "No"), nullable=False)
+    hatchery_nest = Column(Enum(PawikanYesNoEnum), nullable=False)
 
     location_of_hatchlings_id = Column(
-        Integer, ForeignKey('pawikan_hatchlings_location_id'), nullable=False)
+        Integer, ForeignKey('pawikan_hatchling_location.id'), nullable=False)
     location_of_hatchlings = relationship(PawikanHatchlingLocation,
                                           backref='hatchling_encounters')
 
     datetime_first_emergence = Column(DateTime(timezone=True))
     datetime_last_emergence = Column(DateTime(timezone=True))
-    carapace_color = Column(Enum("Black", "White"), nullable=False)
-    p_color = Column(Enum("Black", "White"), nullable=False)
+    carapace_color = Column(Enum(PawikanBlackWhiteEnum), nullable=False)
+    p_color = Column(Enum(PawikanBlackWhiteEnum), nullable=False)
 
     hatchling_disposition_id = Column(
         Integer, ForeignKey('pawikan_hatchling_disposition.id'),
@@ -420,7 +455,7 @@ class PawikanHatchlings(Model):
     hatchling_disposition = relationship(PawikanHatchlingDisposition,
                                          backref="hatchling_encounters")
 
-    released = Column(Enum("Yes", "No"), nullable=False)
+    released = Column(Enum(PawikanYesNoEnum), nullable=False)
 
 
 class PawikanTradeExhibitType(Model):
@@ -483,7 +518,7 @@ class PawikanTradeExhibit(Model):
                                     backref='trade_exhibit_encounters')
 
     amount_encountered = Column(Integer)
-    unit_amount_encountered = Column(Enum("kgs", "pieces"))
+    unit_amount_encountered = Column(Enum(PawikanTradeUnitEnum))
 
     turtle_disposition_id = Column(
         Integer, ForeignKey('pawikan_trade_turtle_disposition.id'))
@@ -521,6 +556,7 @@ class PawikanFishingTurtleDisposition(Model):
 
 
 class PawikanFisheriesInteraction(Model):
+    id = Column(Integer, primary_key=True)
     general_id = Column(Integer, ForeignKey('pawikan_general.id'),
                         nullable=False)
     general = relationship('PawikanGeneral',

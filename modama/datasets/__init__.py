@@ -1,3 +1,3 @@
-#from . import pawikan
-_datasets = []
-#from .pawikan.models import *
+from . import pawikan
+_datasets = [pawikan]
+from .pawikan.models import *

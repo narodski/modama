@@ -3,12 +3,10 @@ from flask_appbuilder import ModelView
 from modama import appbuilder
 from modama.views.dataset_base import BaseObservationView, BaseVerificationView
 from wtforms.validators import NumberRange
-from .models import (PawikanSpecies, PawikanEncounter,
-                     PawikanEncounterPicture, PawikanStranding)
 from fab_addon_geoalchemy.models import GeoSQLAInterface
 from wtforms_jsonschema2.conditions import oneOf
 
-
+"""
 class PawikanEncounterPictureView(ModelView):
     _pretty_name = 'Picture'
     datamodel = SQLAInterface(PawikanEncounterPicture)
@@ -119,4 +117,4 @@ appbuilder.add_view(PawikanVerificationView, "Verify Encounters",
                     category="Pawikan")
 appbuilder.add_view(PawikanEncounterPictureView, "Pictures",
                     category="Pawikan")
-appbuilder.add_view(PawikanSpeciesView, "Species", category="Pawikan")
+appbuilder.add_view(PawikanSpeciesView, "Species", category="Pawikan")"""

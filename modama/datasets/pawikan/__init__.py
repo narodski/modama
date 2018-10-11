@@ -1,4 +1,4 @@
-from .views import PawikanGeneralView
+# from .views import PawikanGeneralView
 from .models import (PawikanEncounterType, PawikanSpecies,
                      PawikanLocationType, PawikanOutcome,
                      PawikanStrandingTurtleDisposition, PawikanStrandingCause,
@@ -184,5 +184,6 @@ def load_base_data():
             log.exception(e)
 
 
-mobile_views = [PawikanGeneralView]
+# mobile_views = [PawikanGeneralView]
+mobile_view = []
 name = "Pawikan"
