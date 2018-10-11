@@ -15,12 +15,10 @@ log = logging.getLogger(__name__)
 
 class BaseObservationView(GeoModelView):
 
-    _base_edit = ['report_id', 'observation_datetime', 'reporter',
-                  'reporter_contact']
-    _base_add = ['observation_datetime', 'reporter', 'reporter_contact']
-    _base_list = ['observation_datetime', 'reporter', 'verified']
-    _base_show = ['report_id', 'observation_datetime', 'reporter', 'verified',
-                  'reporter_contact',
+    _base_edit = ['report_id', 'observation_datetime']
+    _base_add = ['observation_datetime']
+    _base_list = ['observation_datetime', 'verified']
+    _base_show = ['report_id', 'observation_datetime', 'verified',
                   'created_by', 'created_on', 'changed_by', 'changed_on']
 
     print_template = 'print.html'

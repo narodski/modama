@@ -13,8 +13,8 @@ import enum
 
 
 class PawikanYesNoEnum(enum.Enum):
-    yes = 'yes'
-    no = 'no'
+    Yes = 'yes'
+    No = 'no'
 
 
 class PawikanBlackWhiteEnum(enum.Enum):
@@ -118,6 +118,9 @@ class PawikanEncounterType(Model):
     name = Column(String, nullable=False, unique=True)
     description = Column(Text)
 
+    def __repr__(self):
+        return str(self.name)
+
 
 class PawikanLocationType(Model):
     id = Column(Integer, primary_key=True)
@@ -164,7 +167,7 @@ class PawikanGeneral(BaseObservation):
                                nullable=False)
     encounter_type = relationship(PawikanEncounterType,
                                   backref='general_reports')
-    alive = Column(Enum(PawikanYesNoEnum), nullable=False)
+    alive = Column(Enum(PawikanAliveDeadEnum), nullable=False)
     location = Column(Geometry(geometry_type='POINT', srid=4326))
     location_type_id = Column(Integer, ForeignKey('pawikan_location_type.id'),
                               nullable=False)

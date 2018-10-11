@@ -4,6 +4,7 @@ from modama import db
 from flask import g
 from flask_appbuilder.const import PERMISSION_PREFIX
 from wtforms_jsonschema2.geofab import GeoFABConverter
+from wtforms_jsonschema2.utils import _get_pretty_name
 from wtforms import fields
 from fab_addon_geoalchemy.fields import PointField
 import logging
@@ -70,7 +71,7 @@ class FormService(object):
             raise UnkownDatasetError(
                 "Dataset {} does not exist".format(datasetname))
         for v in dataset.mobile_views:
-            if cls.converter._get_pretty_name(v, 'show') == formname \
+            if _get_pretty_name(v, 'show') == formname \
                     and cls.currentUserViewAccess(v, 'add'):
                 return v
         raise UnkownFormError(
@@ -90,7 +91,7 @@ class FormService(object):
         return getattr(view(), _FORMTYPES[formType])(csrf_enabled=False)
 
     @classmethod
-    def processView(cls, view, data):
+    def processView(cls, view, data, ignore_validation=[]):
         log.debug("Processing view {}".format(view))
         # with data {}".format(view, data))
         cols = view.add_columns
@@ -104,6 +105,8 @@ class FormService(object):
 
         for col in cols:
             field = getattr(form, col)
+            if col in ignore_validation:
+                field.vaidators = []
             log.debug("Processing field {}".format(field))
             # log.debug("With data: {}".format(data))
             if col in data.keys():
@@ -112,6 +115,8 @@ class FormService(object):
                     log.debug("Converting pointfield")
                     data[col] = field._getpoint(data[col]['lat'],
                                                 data[col]['lon'])
+                elif isinstance(field, fields.BooleanField):
+                    data[col] = str(data[col])
                 field.raw_data = data[col]
                 if isinstance(field, fields.IntegerField) \
                         and (data[col] == '' or data[col] is None):
@@ -151,6 +156,7 @@ class FormService(object):
         if view.related_views is not None:
             for rv in view.related_views:
                 attrs = rv.datamodel.get_related_fks([view])
+                reverse_attrs = view.datamodel.get_related_fks([rv])
                 for attr in attrs:
                     if attr not in data.keys() or data[attr] is None:
                         continue
@@ -159,6 +165,9 @@ class FormService(object):
                         for val in data[attr].values():
                             obj = cls.processView(rv, val)
                             related_data[attr].append(obj)
+                    if view.datamodel.is_relation_one_to_one(attr):
+                        related_data[attr] = cls.processView(
+                            rv, data[attr], ignore_required=reverse_attrs)
 
         for k, v in related_data.items():
             setattr(instance, k, v)

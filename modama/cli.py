@@ -21,6 +21,7 @@ from sqlalchemy.orm.attributes import InstrumentedAttribute
 from jinja2 import Template
 import re
 import autopep8
+from geoalchemy2 import Geometry
 
 
 app.config['CSRF_ENABLED'] = False
@@ -74,58 +75,172 @@ def get_model_pretty(m, ds_title):
     return re.sub("([a-z])([A-Z])", r"\1 \2", m.__name__.replace(ds_title, ''))
 
 
-@manager.command
-def generate_views(dataset):
+@manager.option('-d', '--dataset', dest='dataset')
+@manager.option('-f', '--file', dest='filename')
+def generate_views(dataset, filename):
     ds = getattr(modama.datasets, dataset)
     ds_title = dataset.title()
-    models = [m for m in ds.models.__dict__.values() if isclass(m)
-              and issubclass(m, Model)
-              and m.__module__ == 'modama.datasets.pawikan.models']
+    models = [m for m in ds.models.__dict__.values() if isclass(m) and
+              issubclass(m, Model) and
+              m.__module__ == 'modama.datasets.pawikan.models']
     ##
-    template = Template("""
-    class {{model.__name__}}View:
-        _pretty_name = '{{model_pretty}}'
-        datamodel = GeoSQLAInterface({{model.__name__}})
-        add_columns = ["{{'", "'.join(add_columns)}}"]
-        list_columns = ["{{'", "'.join(list_columns)}}"]
-        edit_columns = ["{{'", "'.join(edit_columns)}}"]
-        show_columns = ["{{'", "'.join(show_columns)}}"]
-        related_views = [{{', '.join(related_views)}}]
-        add_title = ''
-        show_title = ''
-        list_title = ''
-        edit_title = ''
-        _conditional_relations = [
-            oneOf({}),
-        ]
-    """)
-    ##
+    observation_template = Template('''
+class {{view_name}}(BaseObservationView):
+    _pretty_name = '{{model_pretty}}'
+    datamodel = GeoSQLAInterface({{model.__name__}})
+    add_columns = BaseObservationView._base_add +\\
+                   ["{{'", "'.join(add_columns)}}"] +\\
+                   ["{{'", "'.join(related_columns)}}"]
+    list_columns = BaseObservationView._base_list +\\
+                   ["{{'", "'.join(list_columns)}}"] +\\
+                   ["{{'", "'.join(related_columns)}}"]
+    edit_columns = BaseObservationView._base_edit +\\
+                   ["{{'", "'.join(edit_columns)}}"]
+    show_columns = BaseObservationView._base_show +\\
+                   ["{{'", "'.join(show_columns)}}"] +\\
+                   ["{{'", "'.join(related_columns)}}"] +\\
+                   ["{{'", "'.join(meta_columns)}}"]
+    related_views = [{{', '.join(related_views)}}]
+    search_exclude_columns = ["{{'", "'.join(search_exclude_columns)}}"]
+    add_title = 'Add {{model_pretty}}'
+    show_title = '{{model_pretty}}'
+    list_title = '{{model_pretty}}s'
+    edit_title = 'Edit {{model_pretty}}'
+    """
+    label_columns = {
+        "{{'": "",\n        "'.join(label_columns)}}": ""
+    }
+    validator_columns = {}
+    _conditional_relations = [
+    ]
+    """
 
-    for m in models[:-4]:
-        print(m.__name__)
+
+''')
+    template = Template('''
+class {{view_name}}(ModelView):
+    _pretty_name = '{{model_pretty}}'
+    datamodel = GeoSQLAInterface({{model.__name__}})
+    # add_columns = ["{{'", "'.join(add_columns)}}"] +\\
+    #               ["{{'", "'.join(related_columns)}}"]
+    # list_columns = ["{{'", "'.join(list_columns)}}"] +\\
+    #                ["{{'", "'.join(related_columns)}}"]
+    # edit_columns = ["{{'", "'.join(edit_columns)}}"]
+    # show_columns = ["{{'", "'.join(show_columns)}}"] +\\
+    #                ["{{'", "'.join(related_columns)}}"] +\\
+    #                ["{{'", "'.join(meta_columns)}}"]
+    # related_views = [{{', '.join(related_views)}}]
+    search_exclude_columns = ["{{'", "'.join(search_exclude_columns)}}"]
+    add_title = 'Add {{model_pretty}}'
+    show_title = '{{model_pretty}}'
+    list_title = '{{model_pretty}}s'
+    edit_title = 'Edit {{model_pretty}}'
+    """
+    label_columns = {
+        "{{'": "",\n        "'.join(label_columns)}}": ""
+    }
+    validator_columns = {}
+    _conditional_relations = [
+    ]
+    """
+
+
+''')
+    ##
+    head_template = Template("""
+from flask_appbuilder.models.sqla.interface import SQLAInterface
+from flask_appbuilder import ModelView
+from modama import appbuilder
+from modama.views.dataset_base import BaseObservationView, BaseVerificationView
+from wtforms.validators import NumberRange
+from fab_addon_geoalchemy.models import GeoSQLAInterface
+from wtforms_jsonschema2.conditions import oneOf
+from modama.datasets.{{dataset}}.models import ({{", ".join(models)}})
+""")
+    tail_template = Template("""
+{% for v in observation_views %}
+appbuilder.add_view({{v['name']}}, "{{v['list_title']}}",
+                    category="{{ds_title}}")
+{% endfor %} {% for v in other_views %}
+appbuilder.add_view_no_menu({{v['name']}}){% endfor %}
+""")
+    views = {}
+    meta_cols = ['changed_by', 'changed_on', 'created_by', 'created_on',
+                 'report_id']
+    ignore_always_cols = ['device_id', 'dataset', 'versions']
+    for m in models:
+        observation_view = False
+        if issubclass(m, dataset_base.BaseObservation):
+            tmpl = observation_template
+            observation_view = True
+        else:
+            tmpl = template
         interf = SQLAInterface(m)
+        view_name = get_view_name(m)
         props = [(k, v) for k, v in m.__dict__.items()
                  if isinstance(v, InstrumentedAttribute)]
         data = {'model': m,
-                'view_name': get_view_name(m),
+                'view_name': view_name,
                 'model_pretty': get_model_pretty(m, ds_title),
                 'add_columns': [],
                 'list_columns': [],
                 'show_columns': [],
+                'meta_columns': [],
                 'edit_columns': [],
-                'related_views': []
+                'related_views': [],
+                'label_columns': [],
+                'related_columns': [],
+                'search_exclude_columns': [],
                 }
         for name, prop in props:
+            if name in ignore_always_cols:
+                continue
+            if name in meta_cols:
+                data['meta_columns'].append(name)
+                continue
+            # Loop over the fields
+
             if interf.is_relation(name):
+                # relation properties
                 rel_m = interf.get_related_model(name)
-                data['add_columns'].append(name)
-                data['related_views'].append(get_view_name(rel_m))
-            elif not interf.is_fk(name):
-                data['add_columns'].append(name)
-                data['edit_columns'].append(name)
+                data['related_columns'].append(name)
+                if (not interf.is_relation_many_to_one(name) and
+                    interf.is_pk(
+                        interf.get_relation_fk(name).name)):
+                    # only add if we're on the side of a relation without
+                    # foreign key (so fk points to our primary key)
+                    data['label_columns'].append(name)
+                    data['related_views'].append(get_view_name(rel_m))
+            elif interf.is_fk(name):
+                data['search_exclude_columns'].append(name)
+            else:
+                if isinstance(prop.type, Geometry):
+                    # don't search geometry columns
+                    data['search_exclude_columns'].append(name)
+                if name not in meta_cols:
+                    data['label_columns'].append(name)
+                    data['add_columns'].append(name)
+                    data['edit_columns'].append(name)
+                    data['list_columns'].append(name)
                 data['show_columns'].append(name)
-                data['list_columns'].append(name)
-        print(autopep8.fix_code(template.render(data)))
+
+            views[view_name] = {'code': tmpl.render(data),
+                                'observation_view': observation_view,
+                                'name': view_name,
+                                'num_cols': len(data['show_columns']),
+                                'list_title': data['model_pretty'] + 's',
+                                'related_views': data['related_views']}
+    views_list = sorted(views.values(), key=lambda x: x['num_cols'])
+    head = head_template.render({'models': [m.__name__ for m in models],
+                                 'dataset': dataset})
+    tail = tail_template.render(
+        ds_title=ds_title,
+        observation_views=[v for v in views_list if v['observation_view']],
+        other_views=[v for v in views_list if not v['observation_view']])
+    full_template = "{}\n\n{}\n\n{}".format(
+        head, "\n".join([v['code'] for v in views_list]), tail)
+    with open(filename, 'w') as f:
+        f.write(autopep8.fix_code(full_template))
 
 
 @manager.command

@@ -68,8 +68,6 @@ class BaseObservation(Model, ModamaAuditMixin):
                        default=uuid.uuid1())
     device_id = Column(String(50), unique=False, nullable=False,
                        default='webinterface')
-    reporter = Column(String(255), nullable=False)
-    reporter_contact = Column(String(255), nullable=False)
     dataset = Column(String(50))
 
     __mapper_args__ = {
