@@ -98,8 +98,7 @@ class {{view_name}}(BaseObservationView):
                    ["{{'", "'.join(edit_columns)}}"]
     show_columns = BaseObservationView._base_show +\\
                    ["{{'", "'.join(show_columns)}}"] +\\
-                   ["{{'", "'.join(related_columns)}}"] +\\
-                   ["{{'", "'.join(meta_columns)}}"]
+                   ["{{'", "'.join(related_columns)}}"]
     related_views = [{{', '.join(related_views)}}]
     search_exclude_columns = ["{{'", "'.join(search_exclude_columns)}}"]
     add_title = 'Add {{model_pretty}}'
@@ -127,8 +126,7 @@ class {{view_name}}(ModelView):
     #                ["{{'", "'.join(related_columns)}}"]
     # edit_columns = ["{{'", "'.join(edit_columns)}}"]
     # show_columns = ["{{'", "'.join(show_columns)}}"] +\\
-    #                ["{{'", "'.join(related_columns)}}"] +\\
-    #                ["{{'", "'.join(meta_columns)}}"]
+    #                ["{{'", "'.join(related_columns)}}"]
     # related_views = [{{', '.join(related_views)}}]
     search_exclude_columns = ["{{'", "'.join(search_exclude_columns)}}"]
     add_title = 'Add {{model_pretty}}'
@@ -185,7 +183,6 @@ appbuilder.add_view_no_menu({{v['name']}}){% endfor %}
                 'add_columns': [],
                 'list_columns': [],
                 'show_columns': [],
-                'meta_columns': [],
                 'edit_columns': [],
                 'related_views': [],
                 'label_columns': [],
@@ -196,7 +193,6 @@ appbuilder.add_view_no_menu({{v['name']}}){% endfor %}
             if name in ignore_always_cols:
                 continue
             if name in meta_cols:
-                data['meta_columns'].append(name)
                 continue
             # Loop over the fields
 
@@ -217,11 +213,10 @@ appbuilder.add_view_no_menu({{v['name']}}){% endfor %}
                 if isinstance(prop.type, Geometry):
                     # don't search geometry columns
                     data['search_exclude_columns'].append(name)
-                if name not in meta_cols:
-                    data['label_columns'].append(name)
-                    data['add_columns'].append(name)
-                    data['edit_columns'].append(name)
-                    data['list_columns'].append(name)
+                data['label_columns'].append(name)
+                data['add_columns'].append(name)
+                data['edit_columns'].append(name)
+                data['list_columns'].append(name)
                 data['show_columns'].append(name)
 
             views[view_name] = {'code': tmpl.render(data),
