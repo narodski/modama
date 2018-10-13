@@ -13,7 +13,63 @@ from flask_weasyprint import render_pdf, HTML
 log = logging.getLogger(__name__)
 
 
-class BaseObservationView(GeoModelView):
+class BaseModamaView(GeoModelView):
+
+    # def _get_related_views_widgets(self, item, *args, **kwargs):
+    #     log.debug("Getting related views widgets for {}".format(item))
+    #     widgets = super()._get_related_views_widgets(item, *args, **kwargs)
+    #     for widget in widgets['related_views']:
+    #         log.debug("Got widget {}".format(widget))
+    #     return widgets
+
+    def _get_related_view_widget(self, item, related_view,
+                                 order_column='', order_direction='',
+                                 page=None, page_size=None):
+
+        log.debug("Getting view for {}".format(related_view))
+        fk = related_view.datamodel.get_related_fk(self.datamodel.obj)
+        filters = related_view.datamodel.get_filters()
+        # Check if it's a many to one model relation
+        if related_view.datamodel.is_relation_many_to_one(fk):
+            filters.add_filter_related_view(
+                fk, self.datamodel.FilterRelationOneToManyEqual,
+                self.datamodel.get_pk_value(item))
+        # Check if it's a many to many model relation
+        elif related_view.datamodel.is_relation_many_to_many(fk):
+            filters.add_filter_related_view(
+                fk, self.datamodel.FilterRelationManyToManyEqual,
+                self.datamodel.get_pk_value(item))
+        elif related_view.datamodel.is_relation_one_to_one(fk):
+            log.debug("Got a one-to-one relation")
+            backref = self.datamodel.get_related_fk(related_view.datamodel.obj)
+            rel_item = getattr(item, backref)
+            log.debug("backref {} rel_item {} item {}"
+                      .format(backref, rel_item, item))
+            if rel_item is not None:
+                rel_pk = related_view.datamodel.get_pk_value(rel_item)
+                return related_view._get_show_widget(rel_pk, rel_item)['show']
+            filters.add_filter_related_view(
+                fk, self.datamodel.FilterRelationOneToManyEqual,
+                self.datamodel.get_pk_value(item))
+        else:
+            log.error("Can't find relation on related view {0}"
+                      .format(related_view.name))
+            return None
+        log.debug("Got a different relation")
+        return related_view._get_view_widget(filters=filters,
+                                             order_column=order_column,
+                                             order_direction=order_direction,
+                                             page=page, page_size=page_size)
+
+    base_filters = [['created_by.organizations',
+                     FilterM2MRelationOverlapFunction,
+                     appbuilder.sm.my_organizations]]
+
+    base_permissions = ['can_list', 'can_edit', 'can_show', 'can_add',
+                        'can_delete', 'can_print']
+
+
+class BaseObservationView(BaseModamaView):
 
     _base_edit = ['report_id', 'observation_datetime']
     _base_add = ['observation_datetime']
@@ -66,13 +122,6 @@ class BaseObservationView(GeoModelView):
                                            validators=[validators.required()],
                                            format='%Y-%m-%d %H:%M:%S%z',
                                            widget=DateTimeTZPickerWidget())}
-
-    base_filters = [['created_by.organizations',
-                     FilterM2MRelationOverlapFunction,
-                     appbuilder.sm.my_organizations]]
-
-    base_permissions = ['can_list', 'can_edit', 'can_show', 'can_add',
-                        'can_delete', 'can_print']
 
 
 class BaseVerificationView(GeoModelView):

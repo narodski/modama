@@ -1,7 +1,5 @@
-
-from flask_appbuilder import ModelView
 from modama import appbuilder
-from modama.views.dataset_base import BaseObservationView
+from modama.views.dataset_base import BaseObservationView, BaseModamaView
 from wtforms.validators import NumberRange
 from fab_addon_geoalchemy.models import GeoSQLAInterface
 from flask_babel import gettext as _
@@ -28,7 +26,7 @@ from modama.datasets.pawikan.models import (
 log = logging.getLogger(__name__)
 
 
-class PawikanGeneralPictureView(ModelView):
+class PawikanGeneralPictureView(BaseModamaView):
     _pretty_name = 'General Picture'
     datamodel = GeoSQLAInterface(PawikanGeneralPicture)
     add_columns = ["picture", "general"]
@@ -50,7 +48,7 @@ class PawikanGeneralPictureView(ModelView):
 
 
 '''
-class PawikanNestingActionTakenView(ModelView):
+class PawikanNestingActionTakenView(BaseModamaView):
     _pretty_name = 'Nesting Action Taken'
     datamodel = GeoSQLAInterface(PawikanNestingActionTaken)
     # add_columns = ["name", "id", "description"] +\
@@ -76,7 +74,7 @@ class PawikanNestingActionTakenView(ModelView):
     """
 
 
-class PawikanTradeExhibitTypeView(ModelView):
+class PawikanTradeExhibitTypeView(BaseModamaView):
     _pretty_name = 'Trade Exhibit Type'
     datamodel = GeoSQLAInterface(PawikanTradeExhibitType)
     # add_columns = ["name", "id", "description"] +\
@@ -102,7 +100,7 @@ class PawikanTradeExhibitTypeView(ModelView):
     """
 
 
-class PawikanInwaterTurtleActivityView(ModelView):
+class PawikanInwaterTurtleActivityView(BaseModamaView):
     _pretty_name = 'Inwater Turtle Activity'
     datamodel = GeoSQLAInterface(PawikanInwaterTurtleActivity)
     # add_columns = ["name", "id", "description"] +\
@@ -128,7 +126,7 @@ class PawikanInwaterTurtleActivityView(ModelView):
     """
 
 
-class PawikanEncounterTypeView(ModelView):
+class PawikanEncounterTypeView(BaseModamaView):
     _pretty_name = 'Encounter Type'
     datamodel = GeoSQLAInterface(PawikanEncounterType)
     # add_columns = ["name", "id", "description"] +\
@@ -154,7 +152,7 @@ class PawikanEncounterTypeView(ModelView):
     """
 
 
-class PawikanFacilityEncounteredView(ModelView):
+class PawikanFacilityEncounteredView(BaseModamaView):
     _pretty_name = 'Facility Encountered'
     datamodel = GeoSQLAInterface(PawikanFacilityEncountered)
     # add_columns = ["name", "id", "description"] +\
@@ -180,7 +178,7 @@ class PawikanFacilityEncounteredView(ModelView):
     """
 
 
-class PawikanFishingTurtleConditionView(ModelView):
+class PawikanFishingTurtleConditionView(BaseModamaView):
     _pretty_name = 'Fishing Turtle Condition'
     datamodel = GeoSQLAInterface(PawikanFishingTurtleCondition)
     # add_columns = ["name", "id", "description"] +\
@@ -206,7 +204,7 @@ class PawikanFishingTurtleConditionView(ModelView):
     """
 
 
-class PawikanStrandingCauseView(ModelView):
+class PawikanStrandingCauseView(BaseModamaView):
     _pretty_name = 'Stranding Cause'
     datamodel = GeoSQLAInterface(PawikanStrandingCause)
     # add_columns = ["name", "id", "description"] +\
@@ -232,7 +230,7 @@ class PawikanStrandingCauseView(ModelView):
     """
 
 
-class PawikanTradeTurtleConditionView(ModelView):
+class PawikanTradeTurtleConditionView(BaseModamaView):
     _pretty_name = 'Trade Turtle Condition'
     datamodel = GeoSQLAInterface(PawikanTradeTurtleCondition)
     # add_columns = ["name", "id", "description"] +\
@@ -258,7 +256,7 @@ class PawikanTradeTurtleConditionView(ModelView):
     """
 
 
-class PawikanHatchlingLocationView(ModelView):
+class PawikanHatchlingLocationView(BaseModamaView):
     _pretty_name = 'Hatchling Location'
     datamodel = GeoSQLAInterface(PawikanHatchlingLocation)
     # add_columns = ["name", "id", "description"] +\
@@ -284,7 +282,7 @@ class PawikanHatchlingLocationView(ModelView):
     """
 
 
-class PawikanLocationTypeView(ModelView):
+class PawikanLocationTypeView(BaseModamaView):
     _pretty_name = 'Location Type'
     datamodel = GeoSQLAInterface(PawikanLocationType)
     # add_columns = ["name", "id", "description"] +\
@@ -310,7 +308,7 @@ class PawikanLocationTypeView(ModelView):
     """
 
 
-class PawikanNestTypeView(ModelView):
+class PawikanNestTypeView(BaseModamaView):
     _pretty_name = 'Nest Type'
     datamodel = GeoSQLAInterface(PawikanNestType)
     # add_columns = ["name", "id", "description"] +\
@@ -336,7 +334,7 @@ class PawikanNestTypeView(ModelView):
     """
 
 
-class PawikanFishingTurtleDispositionView(ModelView):
+class PawikanFishingTurtleDispositionView(BaseModamaView):
     _pretty_name = 'Fishing Turtle Disposition'
     datamodel = GeoSQLAInterface(PawikanFishingTurtleDisposition)
     # add_columns = ["name", "id", "description"] +\
@@ -362,7 +360,7 @@ class PawikanFishingTurtleDispositionView(ModelView):
     """
 
 
-class PawikanStrandingTurtleDispositionView(ModelView):
+class PawikanStrandingTurtleDispositionView(BaseModamaView):
     _pretty_name = 'Stranding Turtle Disposition'
     datamodel = GeoSQLAInterface(PawikanStrandingTurtleDisposition)
     # add_columns = ["name", "id", "description"] +\
@@ -388,7 +386,7 @@ class PawikanStrandingTurtleDispositionView(ModelView):
     """
 
 
-class PawikanInwaterActivityTypeView(ModelView):
+class PawikanInwaterActivityTypeView(BaseModamaView):
     _pretty_name = 'Inwater Activity Type'
     datamodel = GeoSQLAInterface(PawikanInwaterActivityType)
     # add_columns = ["name", "id", "description"] +\
@@ -414,7 +412,7 @@ class PawikanInwaterActivityTypeView(ModelView):
     """
 
 
-class PawikanFishingGearView(ModelView):
+class PawikanFishingGearView(BaseModamaView):
     _pretty_name = 'Fishing Gear'
     datamodel = GeoSQLAInterface(PawikanFishingGear)
     # add_columns = ["name", "id", "description"] +\
@@ -440,7 +438,7 @@ class PawikanFishingGearView(ModelView):
     """
 
 
-class PawikanInwaterTypeView(ModelView):
+class PawikanInwaterTypeView(BaseModamaView):
     _pretty_name = 'Inwater Type'
     datamodel = GeoSQLAInterface(PawikanInwaterType)
     # add_columns = ["name", "id", "description"] +\
@@ -466,7 +464,7 @@ class PawikanInwaterTypeView(ModelView):
     """
 
 
-class PawikanTradeTurtleDispositionView(ModelView):
+class PawikanTradeTurtleDispositionView(BaseModamaView):
     _pretty_name = 'Trade Turtle Disposition'
     datamodel = GeoSQLAInterface(PawikanTradeTurtleDisposition)
     # add_columns = ["name", "id", "description"] +\
@@ -492,7 +490,7 @@ class PawikanTradeTurtleDispositionView(ModelView):
     """
 
 
-class PawikanHatchlingDispositionView(ModelView):
+class PawikanHatchlingDispositionView(BaseModamaView):
     _pretty_name = 'Hatchling Disposition'
     datamodel = GeoSQLAInterface(PawikanHatchlingDisposition)
     # add_columns = ["name", "id", "description"] +\
@@ -518,7 +516,7 @@ class PawikanHatchlingDispositionView(ModelView):
     """
 
 
-class PawikanOutcomeView(ModelView):
+class PawikanOutcomeView(BaseModamaView):
     _pretty_name = 'Outcome'
     datamodel = GeoSQLAInterface(PawikanOutcome)
     # add_columns = ["name", "id", "description"] +\
@@ -546,7 +544,7 @@ class PawikanOutcomeView(ModelView):
 '''
 
 
-class PawikanFisheriesInteractionView(ModelView):
+class PawikanFisheriesInteractionView(BaseModamaView):
     _pretty_name = 'Fisheries Interaction'
     datamodel = GeoSQLAInterface(PawikanFisheriesInteraction)
     # add_columns = ["id", "vessel_details", "fisher_details"] +\
@@ -572,7 +570,7 @@ class PawikanFisheriesInteractionView(ModelView):
     """
 
 
-class PawikanInWaterView(ModelView):
+class PawikanInWaterView(BaseModamaView):
     _pretty_name = 'In Water'
     datamodel = GeoSQLAInterface(PawikanInWater)
     # add_columns = ["id", "detailed_location", "depth"] +\
@@ -597,7 +595,7 @@ class PawikanInWaterView(ModelView):
     ]
     """
 
-class PawikanNestWithEggView(ModelView):
+class PawikanNestWithEggView(BaseModamaView):
     _pretty_name = 'Nest With Egg'
     datamodel = GeoSQLAInterface(PawikanNestWithEgg)
     # add_columns = ["location", "area_secure", "detailed_location", "nest_id", "id"] +\
@@ -622,7 +620,7 @@ class PawikanNestWithEggView(ModelView):
     ]
     """
 
-class PawikanTradeExhibitView(ModelView):
+class PawikanTradeExhibitView(BaseModamaView):
     _pretty_name = 'Trade Exhibit'
     datamodel = GeoSQLAInterface(PawikanTradeExhibit)
     # add_columns = ["facility_address", "unit_amount_encountered", "amount_encountered", "id", "facility_contact_person"] +\
@@ -648,7 +646,7 @@ class PawikanTradeExhibitView(ModelView):
     """
 
 
-class PawikanSpeciesView(ModelView):
+class PawikanSpeciesView(BaseModamaView):
     _pretty_name = 'Species'
     datamodel = GeoSQLAInterface(PawikanSpecies)
     # add_columns = ["picture", "genus", "id", "description", "species", "common_name"] +\
@@ -674,7 +672,7 @@ class PawikanSpeciesView(ModelView):
     """
 
 
-class PawikanHatchlingsView(ModelView):
+class PawikanHatchlingsView(BaseModamaView):
     _pretty_name = 'Hatchlings'
     datamodel = GeoSQLAInterface(PawikanHatchlings)
     # add_columns = ["datetime_last_emergence", "datetime_first_emergence", "hatchery_nest", "p_color", "carapace_color", "released", "id"] +\
@@ -700,7 +698,7 @@ class PawikanHatchlingsView(ModelView):
     """
 
 
-class PawikanStrandingView(ModelView):
+class PawikanStrandingView(BaseModamaView):
     _pretty_name = 'Stranding'
     datamodel = GeoSQLAInterface(PawikanStranding)
     # add_columns = ["necropsy_conducted", "cause_confirmed_by", "id", "stranding_code", "necropsy_carried_out_by", "confirmed_cause", "sample_collected"] +\
@@ -726,7 +724,7 @@ class PawikanStrandingView(ModelView):
     """
 
 
-class PawikanTaggingView(ModelView):
+class PawikanTaggingView(BaseModamaView):
     _pretty_name = 'Tagging'
     datamodel = GeoSQLAInterface(PawikanTagging)
     # add_columns = ["new_tags_right", "existing_tags_right", "replacement_tags_right", "new_tags_left", "id", "existing_tags_left", "replacement_tags_left", "existing_tags_origin"] +\
@@ -752,7 +750,7 @@ class PawikanTaggingView(ModelView):
     """
 
 
-class PawikanNestEvaluationView(ModelView):
+class PawikanNestEvaluationView(BaseModamaView):
     _pretty_name = 'Nest Evaluation'
     datamodel = GeoSQLAInterface(PawikanNestEvaluation)
     # add_columns = ["num_eggs_din", "num_eggs_uh", "number_of_eggs_known", "num_eggs_s", "nest_id", "num_eggs_lin", "num_eggs_p", "num_eggs_uht", "num_eggs_ud", "id", "num_eggs_dpe", "num_emerged", "num_eggs_lpe"] +\
@@ -860,52 +858,6 @@ class PawikanGeneralView(BaseObservationView):
     _conditional_relations = [
     ]
     """
-
-    # def _get_related_views_widgets(self, item, *args, **kwargs):
-    #     log.debug("Getting related views widgets for {}".format(item))
-    #     widgets = super()._get_related_views_widgets(item, *args, **kwargs)
-    #     for widget in widgets['related_views']:
-    #         log.debug("Got widget {}".format(widget))
-    #     return widgets
-
-    def _get_related_view_widget(self, item, related_view,
-                                 order_column='', order_direction='',
-                                 page=None, page_size=None):
-
-        log.debug("Getting view for {}".format(related_view))
-        fk = related_view.datamodel.get_related_fk(self.datamodel.obj)
-        filters = related_view.datamodel.get_filters()
-        # Check if it's a many to one model relation
-        if related_view.datamodel.is_relation_many_to_one(fk):
-            filters.add_filter_related_view(
-                fk, self.datamodel.FilterRelationOneToManyEqual,
-                self.datamodel.get_pk_value(item))
-        # Check if it's a many to many model relation
-        elif related_view.datamodel.is_relation_many_to_many(fk):
-            filters.add_filter_related_view(
-                fk, self.datamodel.FilterRelationManyToManyEqual,
-                self.datamodel.get_pk_value(item))
-        elif related_view.datamodel.is_relation_one_to_one(fk):
-            log.debug("Got a one-to-one relation")
-            backref = self.datamodel.get_related_fk(related_view.datamodel.obj)
-            rel_item = getattr(item, backref)
-            log.debug("backref {} rel_item {} item {}"
-                      .format(backref, rel_item, item))
-            if rel_item is not None:
-                rel_pk = related_view.datamodel.get_pk_value(rel_item)
-                return related_view._get_show_widget(rel_pk, rel_item)['show']
-            filters.add_filter_related_view(
-                fk, self.datamodel.FilterRelationOneToManyEqual,
-                self.datamodel.get_pk_value(item))
-        else:
-            log.error("Can't find relation on related view {0}"
-                      .format(related_view.name))
-            return None
-        log.debug("Got a different relation")
-        return related_view._get_view_widget(filters=filters,
-                                             order_column=order_column,
-                                             order_direction=order_direction,
-                                             page=page, page_size=page_size)
 
 
 appbuilder.add_view(PawikanGeneralView, "Encounters",

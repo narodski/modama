@@ -147,9 +147,10 @@ class {{view_name}}(ModelView):
     ##
     head_template = Template("""
 from flask_appbuilder.models.sqla.interface import SQLAInterface
-from flask_appbuilder import ModelView
 from modama import appbuilder
-from modama.views.dataset_base import BaseObservationView, BaseVerificationView
+from modama.views.dataset_base import (BaseObservationView,
+    BaseVerificationView)
+from flask_appbuilder import ModelView
 from wtforms.validators import NumberRange
 from fab_addon_geoalchemy.models import GeoSQLAInterface
 from wtforms_jsonschema2.conditions import oneOf

@@ -1,8 +1,8 @@
-from flask_appbuilder import Model
 from sqlalchemy import (Column, Integer, String, ForeignKey, Text,
                         UniqueConstraint, Enum, DateTime)
 from sqlalchemy.orm import relationship
-from modama.models.dataset_base import (BaseObservation, Sex)  # , Barangay)
+from modama.models.common import ModamaAuditMixin
+from modama.models.dataset_base import (BaseObservation, Sex, Model, ModamaAuditMixin)
 from flask_appbuilder.models.mixins import ImageColumn
 from modama.utils import make_image
 from flask_appbuilder.filemanager import ImageManager
@@ -46,7 +46,7 @@ class PawikanStrandingCodeEnum(enum.Enum):
     code7 = "CODE 7"
 
 
-class PawikanGeneralPicture(Model):
+class PawikanGeneralPicture(Model, ModamaAuditMixin):
     id = Column(Integer, primary_key=True)
     picture = Column(ImageColumn(size=(2048, 2048, False),
                                  thumbnail_size=(800, 800, True)))
@@ -74,7 +74,7 @@ class PawikanGeneralPicture(Model):
             return make_image(None, link_url, alt)
 
 
-class PawikanSpecies(Model):
+class PawikanSpecies(Model, ModamaAuditMixin):
     id = Column(Integer, primary_key=True)
     genus = Column(String(255), nullable=False)
     species = Column(String(255), nullable=False)
@@ -112,7 +112,7 @@ class PawikanSpecies(Model):
             return "%s %s" % (self.genus, self.species)
 
 
-class PawikanEncounterType(Model):
+class PawikanEncounterType(Model, ModamaAuditMixin):
     id = Column(Integer, primary_key=True)
     name = Column(String, nullable=False, unique=True)
     description = Column(Text)
@@ -121,7 +121,7 @@ class PawikanEncounterType(Model):
         return str(self.name)
 
 
-class PawikanLocationType(Model):
+class PawikanLocationType(Model, ModamaAuditMixin):
     id = Column(Integer, primary_key=True)
     name = Column(String, nullable=False)
     description = Column(Text)
@@ -130,7 +130,7 @@ class PawikanLocationType(Model):
         return str(self.name)
 
 
-class PawikanOutcome(Model):
+class PawikanOutcome(Model, ModamaAuditMixin):
     id = Column(Integer, primary_key=True)
     name = Column(String, nullable=False, unique=True)
     description = Column(Text)
@@ -139,7 +139,7 @@ class PawikanOutcome(Model):
         return str(self.name)
 
 
-class PawikanStrandingCause(Model):
+class PawikanStrandingCause(Model, ModamaAuditMixin):
     id = Column(Integer, primary_key=True)
     name = Column(String, nullable=False, unique=True)
     description = Column(Text)
@@ -148,7 +148,7 @@ class PawikanStrandingCause(Model):
         return str(self.name)
 
 
-class PawikanStrandingTurtleDisposition(Model):
+class PawikanStrandingTurtleDisposition(Model, ModamaAuditMixin):
     id = Column(Integer, primary_key=True)
     name = Column(String, nullable=False, unique=True)
     description = Column(Text)
@@ -223,7 +223,7 @@ class PawikanGeneral(BaseObservation):
                                str(self.species))
 
 
-class PawikanStranding(Model):
+class PawikanStranding(Model, ModamaAuditMixin):
 
     id = Column(Integer, primary_key=True)
     general_id = Column(Integer, ForeignKey('pawikan_general.id'),
@@ -249,7 +249,7 @@ class PawikanStranding(Model):
     necropsy_carried_out_by = Column(Text)
 
 
-class PawikanInwaterType(Model):
+class PawikanInwaterType(Model, ModamaAuditMixin):
     id = Column(Integer, primary_key=True)
     name = Column(String, nullable=False)
     description = Column(Text)
@@ -258,7 +258,7 @@ class PawikanInwaterType(Model):
         return str(self.name)
 
 
-class PawikanInwaterActivityType(Model):
+class PawikanInwaterActivityType(Model, ModamaAuditMixin):
     id = Column(Integer, primary_key=True)
     name = Column(String, nullable=False)
     description = Column(Text)
@@ -267,7 +267,7 @@ class PawikanInwaterActivityType(Model):
         return str(self.name)
 
 
-class PawikanInwaterTurtleActivity(Model):
+class PawikanInwaterTurtleActivity(Model, ModamaAuditMixin):
     id = Column(Integer, primary_key=True)
     name = Column(String, nullable=False)
     description = Column(Text)
@@ -276,7 +276,7 @@ class PawikanInwaterTurtleActivity(Model):
         return str(self.name)
 
 
-class PawikanInWater(Model):
+class PawikanInWater(Model, ModamaAuditMixin):
 
     id = Column(Integer, primary_key=True)
     general_id = Column(Integer, ForeignKey('pawikan_general.id'),
@@ -305,7 +305,7 @@ class PawikanInWater(Model):
                                    backref="inwater_encounters")
 
 
-class PawikanTagging(Model):
+class PawikanTagging(Model, ModamaAuditMixin):
 
     id = Column(Integer, primary_key=True)
     general_id = Column(Integer, ForeignKey('pawikan_general.id'),
@@ -323,7 +323,7 @@ class PawikanTagging(Model):
     replacement_tags_right = Column(Text)
 
 
-class PawikanNestType(Model):
+class PawikanNestType(Model, ModamaAuditMixin):
     id = Column(Integer, primary_key=True)
     name = Column(String, nullable=False)
     description = Column(Text)
@@ -332,7 +332,7 @@ class PawikanNestType(Model):
         return str(self.name)
 
 
-class PawikanNestingActionTaken(Model):
+class PawikanNestingActionTaken(Model, ModamaAuditMixin):
     id = Column(Integer, primary_key=True)
     name = Column(String, nullable=False)
     description = Column(Text)
@@ -341,7 +341,7 @@ class PawikanNestingActionTaken(Model):
         return str(self.name)
 
 
-class PawikanNestWithEgg(Model):
+class PawikanNestWithEgg(Model, ModamaAuditMixin):
 
     id = Column(Integer, primary_key=True)
     general_id = Column(Integer, ForeignKey('pawikan_general.id'),
@@ -361,7 +361,7 @@ class PawikanNestWithEgg(Model):
     area_secure = Column(Enum(PawikanYesNoEnum))
 
 
-class PawikanNestEvaluation(Model):
+class PawikanNestEvaluation(Model, ModamaAuditMixin):
     id = Column(Integer, primary_key=True)
     general_id = Column(Integer, ForeignKey('pawikan_general.id'),
                         nullable=False)
@@ -412,7 +412,7 @@ class PawikanNestEvaluation(Model):
         return None
 
 
-class PawikanHatchlingLocation(Model):
+class PawikanHatchlingLocation(Model, ModamaAuditMixin):
     id = Column(Integer, primary_key=True)
     name = Column(String, nullable=False)
     description = Column(Text)
@@ -421,7 +421,7 @@ class PawikanHatchlingLocation(Model):
         return str(self.name)
 
 
-class PawikanHatchlingDisposition(Model):
+class PawikanHatchlingDisposition(Model, ModamaAuditMixin):
     id = Column(Integer, primary_key=True)
     name = Column(String, nullable=False)
     description = Column(Text)
@@ -430,7 +430,7 @@ class PawikanHatchlingDisposition(Model):
         return str(self.name)
 
 
-class PawikanHatchlings(Model):
+class PawikanHatchlings(Model, ModamaAuditMixin):
     id = Column(Integer, primary_key=True)
     general_id = Column(Integer, ForeignKey('pawikan_general.id'),
                         nullable=False)
@@ -458,7 +458,7 @@ class PawikanHatchlings(Model):
     released = Column(Enum(PawikanYesNoEnum), nullable=False)
 
 
-class PawikanTradeExhibitType(Model):
+class PawikanTradeExhibitType(Model, ModamaAuditMixin):
     id = Column(Integer, primary_key=True)
     name = Column(String, nullable=False)
     description = Column(Text)
@@ -467,7 +467,7 @@ class PawikanTradeExhibitType(Model):
         return str(self.name)
 
 
-class PawikanFacilityEncountered(Model):
+class PawikanFacilityEncountered(Model, ModamaAuditMixin):
     id = Column(Integer, primary_key=True)
     name = Column(String, nullable=False)
     description = Column(Text)
@@ -476,7 +476,7 @@ class PawikanFacilityEncountered(Model):
         return str(self.name)
 
 
-class PawikanTradeTurtleCondition(Model):
+class PawikanTradeTurtleCondition(Model, ModamaAuditMixin):
     id = Column(Integer, primary_key=True)
     name = Column(String, nullable=False)
     description = Column(Text)
@@ -485,7 +485,7 @@ class PawikanTradeTurtleCondition(Model):
         return str(self.name)
 
 
-class PawikanTradeTurtleDisposition(Model):
+class PawikanTradeTurtleDisposition(Model, ModamaAuditMixin):
     id = Column(Integer, primary_key=True)
     name = Column(String, nullable=False)
     description = Column(Text)
@@ -494,7 +494,7 @@ class PawikanTradeTurtleDisposition(Model):
         return str(self.name)
 
 
-class PawikanTradeExhibit(Model):
+class PawikanTradeExhibit(Model, ModamaAuditMixin):
     id = Column(Integer, primary_key=True)
     general_id = Column(Integer, ForeignKey('pawikan_general.id'),
                         nullable=False)
@@ -528,7 +528,7 @@ class PawikanTradeExhibit(Model):
     facility_contact_person = Column(Text)
 
 
-class PawikanFishingGear(Model):
+class PawikanFishingGear(Model, ModamaAuditMixin):
     id = Column(Integer, primary_key=True)
     name = Column(String, nullable=False)
     description = Column(Text)
@@ -537,7 +537,7 @@ class PawikanFishingGear(Model):
         return str(self.name)
 
 
-class PawikanFishingTurtleCondition(Model):
+class PawikanFishingTurtleCondition(Model, ModamaAuditMixin):
     id = Column(Integer, primary_key=True)
     name = Column(String, nullable=False)
     description = Column(Text)
@@ -546,7 +546,7 @@ class PawikanFishingTurtleCondition(Model):
         return str(self.name)
 
 
-class PawikanFishingTurtleDisposition(Model):
+class PawikanFishingTurtleDisposition(Model, ModamaAuditMixin):
     id = Column(Integer, primary_key=True)
     name = Column(String, nullable=False)
     description = Column(Text)
@@ -555,7 +555,7 @@ class PawikanFishingTurtleDisposition(Model):
         return str(self.name)
 
 
-class PawikanFisheriesInteraction(Model):
+class PawikanFisheriesInteraction(Model, ModamaAuditMixin):
     id = Column(Integer, primary_key=True)
     general_id = Column(Integer, ForeignKey('pawikan_general.id'),
                         nullable=False)
