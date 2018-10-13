@@ -4,9 +4,11 @@ from wtforms import DateTimeField, validators, TextField
 from ..widgets import DateTimeTZPickerWidget, ROTextFieldWidget
 from ..models.filters import FilterM2MRelationOverlapFunction
 from flask_appbuilder.models.sqla.filters import FilterEqual
+from flask_appbuilder.widgets import ShowWidget
 from flask_appbuilder.actions import action
 from modama import appbuilder
-from modama.views.widgets import ShowPrintWidget, ListPrintWidget
+from modama.views.widgets import (ShowPrintWidget, ListPrintWidget,
+                                  ModamaShowWidget)
 import logging
 from flask_weasyprint import render_pdf, HTML
 
@@ -14,6 +16,9 @@ log = logging.getLogger(__name__)
 
 
 class BaseModamaView(GeoModelView):
+
+    show_widget = ModamaShowWidget
+    show_template = 'general/model/show.html'
 
     # def _get_related_views_widgets(self, item, *args, **kwargs):
     #     log.debug("Getting related views widgets for {}".format(item))
@@ -66,7 +71,7 @@ class BaseModamaView(GeoModelView):
                      appbuilder.sm.my_organizations]]
 
     base_permissions = ['can_list', 'can_edit', 'can_show', 'can_add',
-                        'can_delete', 'can_print']
+                        'can_delete']
 
 
 class BaseObservationView(BaseModamaView):
@@ -92,12 +97,22 @@ class BaseObservationView(BaseModamaView):
         widgets['related_print_views'] = []
         for w in widgets['related_views']:
             args = {}
-            for a in ['label_columns', 'include_columns', 'value_columns',
-                      'order_columns', 'formatters_columns', 'page',
-                      'page_size', 'count', 'pks', 'actions', 'filters',
-                      'modelview_name']:
+            log.debug("Widget: {}".format(w))
+            log.debug("args: {}".format(w.template_args.keys()))
+            if isinstance(w, ShowWidget):
+                arg_keys = ['modelview_name', 'label_columns',
+                            'formatters_columns', 'actions', 'value_columns',
+                            'fieldsets', 'pk', 'include_columns']
+                widget = self.print_show_widget
+            else:
+                arg_keys = ['label_columns', 'include_columns', 'value_columns',
+                            'order_columns', 'formatters_columns', 'page',
+                            'page_size', 'count', 'pks', 'actions', 'filters',
+                            'modelview_name']
+                widget = self.print_list_widget
+            for a in arg_keys:
                 args[a] = w.template_args[a]
-            w2 = self.print_list_widget(**args)
+            w2 = widget(**args)
             log.debug("Converting {} into {} with template {}".format(
                 w, w2, w2.template))
             widgets['related_print_views'].append(w2)
@@ -122,6 +137,8 @@ class BaseObservationView(BaseModamaView):
                                            validators=[validators.required()],
                                            format='%Y-%m-%d %H:%M:%S%z',
                                            widget=DateTimeTZPickerWidget())}
+    base_permissions = ['can_list', 'can_show', 'can_edit', 'can_print',
+                        'can_delete', 'can_add']
 
 
 class BaseVerificationView(GeoModelView):

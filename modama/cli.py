@@ -166,7 +166,7 @@ appbuilder.add_view_no_menu({{v['name']}}){% endfor %}
     views = {}
     meta_cols = ['changed_by', 'changed_on', 'created_by', 'created_on',
                  'report_id']
-    ignore_always_cols = ['device_id', 'dataset', 'versions']
+    ignore_always_cols = ['device_id', 'dataset', 'versions', 'id']
     for m in models:
         observation_view = False
         if issubclass(m, dataset_base.BaseObservation):

@@ -51,12 +51,12 @@ class PawikanGeneralPictureView(BaseModamaView):
 class PawikanNestingActionTakenView(BaseModamaView):
     _pretty_name = 'Nesting Action Taken'
     datamodel = GeoSQLAInterface(PawikanNestingActionTaken)
-    # add_columns = ["name", "id", "description"] +\
+    # add_columns = ["name", "description"] +\
     #               ["nest_encounters"]
-    # list_columns = ["name", "id", "description"] +\
+    # list_columns = ["name", "description"] +\
     #                ["nest_encounters"]
-    # edit_columns = ["name", "id", "description"]
-    # show_columns = ["name", "id", "description"] +\
+    # edit_columns = ["name", "description"]
+    # show_columns = ["name", "description"] +\
     #                ["nest_encounters"] +\
     #                [""]
     # related_views = [PawikanNestWithEggView]
@@ -77,12 +77,12 @@ class PawikanNestingActionTakenView(BaseModamaView):
 class PawikanTradeExhibitTypeView(BaseModamaView):
     _pretty_name = 'Trade Exhibit Type'
     datamodel = GeoSQLAInterface(PawikanTradeExhibitType)
-    # add_columns = ["name", "id", "description"] +\
+    # add_columns = ["name", "description"] +\
     #               ["trade_exhibit_encounters"]
-    # list_columns = ["name", "id", "description"] +\
+    # list_columns = ["name", "description"] +\
     #                ["trade_exhibit_encounters"]
-    # edit_columns = ["name", "id", "description"]
-    # show_columns = ["name", "id", "description"] +\
+    # edit_columns = ["name", "description"]
+    # show_columns = ["name", "description"] +\
     #                ["trade_exhibit_encounters"] +\
     #                [""]
     # related_views = [PawikanTradeExhibitView]
@@ -103,12 +103,12 @@ class PawikanTradeExhibitTypeView(BaseModamaView):
 class PawikanInwaterTurtleActivityView(BaseModamaView):
     _pretty_name = 'Inwater Turtle Activity'
     datamodel = GeoSQLAInterface(PawikanInwaterTurtleActivity)
-    # add_columns = ["name", "id", "description"] +\
+    # add_columns = ["name", "description"] +\
     #               ["inwater_encounters"]
-    # list_columns = ["name", "id", "description"] +\
+    # list_columns = ["name", "description"] +\
     #                ["inwater_encounters"]
-    # edit_columns = ["name", "id", "description"]
-    # show_columns = ["name", "id", "description"] +\
+    # edit_columns = ["name", "description"]
+    # show_columns = ["name", "description"] +\
     #                ["inwater_encounters"] +\
     #                [""]
     # related_views = [PawikanInWaterView]
@@ -129,12 +129,12 @@ class PawikanInwaterTurtleActivityView(BaseModamaView):
 class PawikanEncounterTypeView(BaseModamaView):
     _pretty_name = 'Encounter Type'
     datamodel = GeoSQLAInterface(PawikanEncounterType)
-    # add_columns = ["name", "id", "description"] +\
+    # add_columns = ["name", "description"] +\
     #               ["general_reports"]
-    # list_columns = ["name", "id", "description"] +\
+    # list_columns = ["name", "description"] +\
     #                ["general_reports"]
-    # edit_columns = ["name", "id", "description"]
-    # show_columns = ["name", "id", "description"] +\
+    # edit_columns = ["name", "description"]
+    # show_columns = ["name", "description"] +\
     #                ["general_reports"] +\
     #                [""]
     # related_views = [PawikanGeneralView]
@@ -155,12 +155,12 @@ class PawikanEncounterTypeView(BaseModamaView):
 class PawikanFacilityEncounteredView(BaseModamaView):
     _pretty_name = 'Facility Encountered'
     datamodel = GeoSQLAInterface(PawikanFacilityEncountered)
-    # add_columns = ["name", "id", "description"] +\
+    # add_columns = ["name", "description"] +\
     #               ["trade_exhibit_encounters"]
-    # list_columns = ["name", "id", "description"] +\
+    # list_columns = ["name", "description"] +\
     #                ["trade_exhibit_encounters"]
-    # edit_columns = ["name", "id", "description"]
-    # show_columns = ["name", "id", "description"] +\
+    # edit_columns = ["name", "description"]
+    # show_columns = ["name", "description"] +\
     #                ["trade_exhibit_encounters"] +\
     #                [""]
     # related_views = [PawikanTradeExhibitView]
@@ -181,12 +181,12 @@ class PawikanFacilityEncounteredView(BaseModamaView):
 class PawikanFishingTurtleConditionView(BaseModamaView):
     _pretty_name = 'Fishing Turtle Condition'
     datamodel = GeoSQLAInterface(PawikanFishingTurtleCondition)
-    # add_columns = ["name", "id", "description"] +\
+    # add_columns = ["name", "description"] +\
     #               ["fisheries_interactions"]
-    # list_columns = ["name", "id", "description"] +\
+    # list_columns = ["name", "description"] +\
     #                ["fisheries_interactions"]
-    # edit_columns = ["name", "id", "description"]
-    # show_columns = ["name", "id", "description"] +\
+    # edit_columns = ["name", "description"]
+    # show_columns = ["name", "description"] +\
     #                ["fisheries_interactions"] +\
     #                [""]
     # related_views = [PawikanFisheriesInteractionView]
@@ -207,12 +207,12 @@ class PawikanFishingTurtleConditionView(BaseModamaView):
 class PawikanStrandingCauseView(BaseModamaView):
     _pretty_name = 'Stranding Cause'
     datamodel = GeoSQLAInterface(PawikanStrandingCause)
-    # add_columns = ["name", "id", "description"] +\
+    # add_columns = ["name", "description"] +\
     #               [""]
-    # list_columns = ["name", "id", "description"] +\
+    # list_columns = ["name", "description"] +\
     #                [""]
-    # edit_columns = ["name", "id", "description"]
-    # show_columns = ["name", "id", "description"] +\
+    # edit_columns = ["name", "description"]
+    # show_columns = ["name", "description"] +\
     #                [""] +\
     #                [""]
     # related_views = []
@@ -233,12 +233,12 @@ class PawikanStrandingCauseView(BaseModamaView):
 class PawikanTradeTurtleConditionView(BaseModamaView):
     _pretty_name = 'Trade Turtle Condition'
     datamodel = GeoSQLAInterface(PawikanTradeTurtleCondition)
-    # add_columns = ["name", "id", "description"] +\
+    # add_columns = ["name", "description"] +\
     #               ["trade_exhibit_encounters"]
-    # list_columns = ["name", "id", "description"] +\
+    # list_columns = ["name", "description"] +\
     #                ["trade_exhibit_encounters"]
-    # edit_columns = ["name", "id", "description"]
-    # show_columns = ["name", "id", "description"] +\
+    # edit_columns = ["name", "description"]
+    # show_columns = ["name", "description"] +\
     #                ["trade_exhibit_encounters"] +\
     #                [""]
     # related_views = [PawikanTradeExhibitView]
@@ -259,12 +259,12 @@ class PawikanTradeTurtleConditionView(BaseModamaView):
 class PawikanHatchlingLocationView(BaseModamaView):
     _pretty_name = 'Hatchling Location'
     datamodel = GeoSQLAInterface(PawikanHatchlingLocation)
-    # add_columns = ["name", "id", "description"] +\
+    # add_columns = ["name", "description"] +\
     #               ["hatchling_encounters"]
-    # list_columns = ["name", "id", "description"] +\
+    # list_columns = ["name", "description"] +\
     #                ["hatchling_encounters"]
-    # edit_columns = ["name", "id", "description"]
-    # show_columns = ["name", "id", "description"] +\
+    # edit_columns = ["name", "description"]
+    # show_columns = ["name", "description"] +\
     #                ["hatchling_encounters"] +\
     #                [""]
     # related_views = [PawikanHatchlingsView]
@@ -285,12 +285,12 @@ class PawikanHatchlingLocationView(BaseModamaView):
 class PawikanLocationTypeView(BaseModamaView):
     _pretty_name = 'Location Type'
     datamodel = GeoSQLAInterface(PawikanLocationType)
-    # add_columns = ["name", "id", "description"] +\
+    # add_columns = ["name", "description"] +\
     #               [""]
-    # list_columns = ["name", "id", "description"] +\
+    # list_columns = ["name", "description"] +\
     #                [""]
-    # edit_columns = ["name", "id", "description"]
-    # show_columns = ["name", "id", "description"] +\
+    # edit_columns = ["name", "description"]
+    # show_columns = ["name", "description"] +\
     #                [""] +\
     #                [""]
     # related_views = []
@@ -311,12 +311,12 @@ class PawikanLocationTypeView(BaseModamaView):
 class PawikanNestTypeView(BaseModamaView):
     _pretty_name = 'Nest Type'
     datamodel = GeoSQLAInterface(PawikanNestType)
-    # add_columns = ["name", "id", "description"] +\
+    # add_columns = ["name", "description"] +\
     #               ["nest_encounters"]
-    # list_columns = ["name", "id", "description"] +\
+    # list_columns = ["name", "description"] +\
     #                ["nest_encounters"]
-    # edit_columns = ["name", "id", "description"]
-    # show_columns = ["name", "id", "description"] +\
+    # edit_columns = ["name", "description"]
+    # show_columns = ["name", "description"] +\
     #                ["nest_encounters"] +\
     #                [""]
     # related_views = [PawikanNestWithEggView]
@@ -337,12 +337,12 @@ class PawikanNestTypeView(BaseModamaView):
 class PawikanFishingTurtleDispositionView(BaseModamaView):
     _pretty_name = 'Fishing Turtle Disposition'
     datamodel = GeoSQLAInterface(PawikanFishingTurtleDisposition)
-    # add_columns = ["name", "id", "description"] +\
+    # add_columns = ["name", "description"] +\
     #               ["fisheries_interactions"]
-    # list_columns = ["name", "id", "description"] +\
+    # list_columns = ["name", "description"] +\
     #                ["fisheries_interactions"]
-    # edit_columns = ["name", "id", "description"]
-    # show_columns = ["name", "id", "description"] +\
+    # edit_columns = ["name", "description"]
+    # show_columns = ["name", "description"] +\
     #                ["fisheries_interactions"] +\
     #                [""]
     # related_views = [PawikanFisheriesInteractionView]
@@ -363,12 +363,12 @@ class PawikanFishingTurtleDispositionView(BaseModamaView):
 class PawikanStrandingTurtleDispositionView(BaseModamaView):
     _pretty_name = 'Stranding Turtle Disposition'
     datamodel = GeoSQLAInterface(PawikanStrandingTurtleDisposition)
-    # add_columns = ["name", "id", "description"] +\
+    # add_columns = ["name", "description"] +\
     #               [""]
-    # list_columns = ["name", "id", "description"] +\
+    # list_columns = ["name", "description"] +\
     #                [""]
-    # edit_columns = ["name", "id", "description"]
-    # show_columns = ["name", "id", "description"] +\
+    # edit_columns = ["name", "description"]
+    # show_columns = ["name", "description"] +\
     #                [""] +\
     #                [""]
     # related_views = []
@@ -389,12 +389,12 @@ class PawikanStrandingTurtleDispositionView(BaseModamaView):
 class PawikanInwaterActivityTypeView(BaseModamaView):
     _pretty_name = 'Inwater Activity Type'
     datamodel = GeoSQLAInterface(PawikanInwaterActivityType)
-    # add_columns = ["name", "id", "description"] +\
+    # add_columns = ["name", "description"] +\
     #               ["inwater_encounters"]
-    # list_columns = ["name", "id", "description"] +\
+    # list_columns = ["name", "description"] +\
     #                ["inwater_encounters"]
-    # edit_columns = ["name", "id", "description"]
-    # show_columns = ["name", "id", "description"] +\
+    # edit_columns = ["name", "description"]
+    # show_columns = ["name", "description"] +\
     #                ["inwater_encounters"] +\
     #                [""]
     # related_views = [PawikanInWaterView]
@@ -415,12 +415,12 @@ class PawikanInwaterActivityTypeView(BaseModamaView):
 class PawikanFishingGearView(BaseModamaView):
     _pretty_name = 'Fishing Gear'
     datamodel = GeoSQLAInterface(PawikanFishingGear)
-    # add_columns = ["name", "id", "description"] +\
+    # add_columns = ["name", "description"] +\
     #               ["fisheries_interactions"]
-    # list_columns = ["name", "id", "description"] +\
+    # list_columns = ["name", "description"] +\
     #                ["fisheries_interactions"]
-    # edit_columns = ["name", "id", "description"]
-    # show_columns = ["name", "id", "description"] +\
+    # edit_columns = ["name", "description"]
+    # show_columns = ["name", "description"] +\
     #                ["fisheries_interactions"] +\
     #                [""]
     # related_views = [PawikanFisheriesInteractionView]
@@ -441,12 +441,12 @@ class PawikanFishingGearView(BaseModamaView):
 class PawikanInwaterTypeView(BaseModamaView):
     _pretty_name = 'Inwater Type'
     datamodel = GeoSQLAInterface(PawikanInwaterType)
-    # add_columns = ["name", "id", "description"] +\
+    # add_columns = ["name", "description"] +\
     #               ["inwater_encounters"]
-    # list_columns = ["name", "id", "description"] +\
+    # list_columns = ["name", "description"] +\
     #                ["inwater_encounters"]
-    # edit_columns = ["name", "id", "description"]
-    # show_columns = ["name", "id", "description"] +\
+    # edit_columns = ["name", "description"]
+    # show_columns = ["name", "description"] +\
     #                ["inwater_encounters"] +\
     #                [""]
     # related_views = [PawikanInWaterView]
@@ -467,12 +467,12 @@ class PawikanInwaterTypeView(BaseModamaView):
 class PawikanTradeTurtleDispositionView(BaseModamaView):
     _pretty_name = 'Trade Turtle Disposition'
     datamodel = GeoSQLAInterface(PawikanTradeTurtleDisposition)
-    # add_columns = ["name", "id", "description"] +\
+    # add_columns = ["name", "description"] +\
     #               ["trade_exhibit_encounter"]
-    # list_columns = ["name", "id", "description"] +\
+    # list_columns = ["name", "description"] +\
     #                ["trade_exhibit_encounter"]
-    # edit_columns = ["name", "id", "description"]
-    # show_columns = ["name", "id", "description"] +\
+    # edit_columns = ["name", "description"]
+    # show_columns = ["name", "description"] +\
     #                ["trade_exhibit_encounter"] +\
     #                [""]
     # related_views = [PawikanTradeExhibitView]
@@ -493,12 +493,12 @@ class PawikanTradeTurtleDispositionView(BaseModamaView):
 class PawikanHatchlingDispositionView(BaseModamaView):
     _pretty_name = 'Hatchling Disposition'
     datamodel = GeoSQLAInterface(PawikanHatchlingDisposition)
-    # add_columns = ["name", "id", "description"] +\
+    # add_columns = ["name", "description"] +\
     #               ["hatchling_encounters"]
-    # list_columns = ["name", "id", "description"] +\
+    # list_columns = ["name", "description"] +\
     #                ["hatchling_encounters"]
-    # edit_columns = ["name", "id", "description"]
-    # show_columns = ["name", "id", "description"] +\
+    # edit_columns = ["name", "description"]
+    # show_columns = ["name", "description"] +\
     #                ["hatchling_encounters"] +\
     #                [""]
     # related_views = [PawikanHatchlingsView]
@@ -519,12 +519,12 @@ class PawikanHatchlingDispositionView(BaseModamaView):
 class PawikanOutcomeView(BaseModamaView):
     _pretty_name = 'Outcome'
     datamodel = GeoSQLAInterface(PawikanOutcome)
-    # add_columns = ["name", "id", "description"] +\
+    # add_columns = ["name", "description"] +\
     #               ["general_reports"]
-    # list_columns = ["name", "id", "description"] +\
+    # list_columns = ["name", "description"] +\
     #                ["general_reports"]
-    # edit_columns = ["name", "id", "description"]
-    # show_columns = ["name", "id", "description"] +\
+    # edit_columns = ["name", "description"]
+    # show_columns = ["name", "description"] +\
     #                ["general_reports"] +\
     #                [""]
     # related_views = [PawikanGeneralView]
@@ -547,12 +547,12 @@ class PawikanOutcomeView(BaseModamaView):
 class PawikanFisheriesInteractionView(BaseModamaView):
     _pretty_name = 'Fisheries Interaction'
     datamodel = GeoSQLAInterface(PawikanFisheriesInteraction)
-    # add_columns = ["id", "vessel_details", "fisher_details"] +\
+    # add_columns = ["vessel_details", "fisher_details"] +\
     #               ["turtle_disposition", "general", "gear_used", "turtle_condition"]
-    # list_columns = ["id", "vessel_details", "fisher_details"] +\
+    # list_columns = ["vessel_details", "fisher_details"] +\
     #                ["turtle_disposition", "general", "gear_used", "turtle_condition"]
-    # edit_columns = ["id", "vessel_details", "fisher_details"]
-    # show_columns = ["id", "vessel_details", "fisher_details"] +\
+    # edit_columns = ["vessel_details", "fisher_details"]
+    # show_columns = ["vessel_details", "fisher_details"] +\
     #                ["turtle_disposition", "general", "gear_used", "turtle_condition"] +\
     #                [""]
     # related_views = []
@@ -573,12 +573,12 @@ class PawikanFisheriesInteractionView(BaseModamaView):
 class PawikanInWaterView(BaseModamaView):
     _pretty_name = 'In Water'
     datamodel = GeoSQLAInterface(PawikanInWater)
-    # add_columns = ["id", "detailed_location", "depth"] +\
+    # add_columns = ["detailed_location", "depth"] +\
     #               ["inwater_encounter_type", "general", "your_activity", "turtle_activity"]
-    # list_columns = ["id", "detailed_location", "depth"] +\
+    # list_columns = ["detailed_location", "depth"] +\
     #                ["inwater_encounter_type", "general", "your_activity", "turtle_activity"]
-    # edit_columns = ["id", "detailed_location", "depth"]
-    # show_columns = ["id", "detailed_location", "depth"] +\
+    # edit_columns = ["detailed_location", "depth"]
+    # show_columns = ["detailed_location", "depth"] +\
     #                ["inwater_encounter_type", "general", "your_activity", "turtle_activity"] +\
     #                [""]
     # related_views = []
@@ -623,12 +623,12 @@ class PawikanNestWithEggView(BaseModamaView):
 class PawikanTradeExhibitView(BaseModamaView):
     _pretty_name = 'Trade Exhibit'
     datamodel = GeoSQLAInterface(PawikanTradeExhibit)
-    # add_columns = ["facility_address", "unit_amount_encountered", "amount_encountered", "id", "facility_contact_person"] +\
+    # add_columns = ["facility_address", "unit_amount_encountered", "amount_encountered", "facility_contact_person"] +\
     #               ["turtle_disposition", "facility_encountered", "turtle_condition", "general", "trade_exhibit_type"]
-    # list_columns = ["facility_address", "unit_amount_encountered", "amount_encountered", "id", "facility_contact_person"] +\
+    # list_columns = ["facility_address", "unit_amount_encountered", "amount_encountered", "facility_contact_person"] +\
     #                ["turtle_disposition", "facility_encountered", "turtle_condition", "general", "trade_exhibit_type"]
-    # edit_columns = ["facility_address", "unit_amount_encountered", "amount_encountered", "id", "facility_contact_person"]
-    # show_columns = ["facility_address", "unit_amount_encountered", "amount_encountered", "id", "facility_contact_person"] +\
+    # edit_columns = ["facility_address", "unit_amount_encountered", "amount_encountered", "facility_contact_person"]
+    # show_columns = ["facility_address", "unit_amount_encountered", "amount_encountered", "facility_contact_person"] +\
     #                ["turtle_disposition", "facility_encountered", "turtle_condition", "general", "trade_exhibit_type"] +\
     #                [""]
     # related_views = []
@@ -649,12 +649,12 @@ class PawikanTradeExhibitView(BaseModamaView):
 class PawikanSpeciesView(BaseModamaView):
     _pretty_name = 'Species'
     datamodel = GeoSQLAInterface(PawikanSpecies)
-    # add_columns = ["picture", "genus", "id", "description", "species", "common_name"] +\
+    # add_columns = ["picture", "genus", "description", "species", "common_name"] +\
     #               ["general_reports"]
-    # list_columns = ["picture", "genus", "id", "description", "species", "common_name"] +\
+    # list_columns = ["picture", "genus", "description", "species", "common_name"] +\
     #                ["general_reports"]
-    # edit_columns = ["picture", "genus", "id", "description", "species", "common_name"]
-    # show_columns = ["picture", "genus", "id", "description", "species", "common_name"] +\
+    # edit_columns = ["picture", "genus", "description", "species", "common_name"]
+    # show_columns = ["picture", "genus", "description", "species", "common_name"] +\
     #                ["general_reports"] +\
     #                [""]
     # related_views = [PawikanGeneralView]
@@ -701,23 +701,35 @@ class PawikanHatchlingsView(BaseModamaView):
 class PawikanStrandingView(BaseModamaView):
     _pretty_name = 'Stranding'
     datamodel = GeoSQLAInterface(PawikanStranding)
-    # add_columns = ["necropsy_conducted", "cause_confirmed_by", "id", "stranding_code", "necropsy_carried_out_by", "confirmed_cause", "sample_collected"] +\
-    #               ["turtle_disposition", "suspected_cause", "general"]
-    # list_columns = ["necropsy_conducted", "cause_confirmed_by", "id", "stranding_code", "necropsy_carried_out_by", "confirmed_cause", "sample_collected"] +\
-    #                ["turtle_disposition", "suspected_cause", "general"]
-    # edit_columns = ["necropsy_conducted", "cause_confirmed_by", "id", "stranding_code", "necropsy_carried_out_by", "confirmed_cause", "sample_collected"]
-    # show_columns = ["necropsy_conducted", "cause_confirmed_by", "id", "stranding_code", "necropsy_carried_out_by", "confirmed_cause", "sample_collected"] +\
-    #                ["turtle_disposition", "suspected_cause", "general"] +\
-    #                [""]
+    add_columns = ["stranding_code", "turtle_disposition", "suspected_cause",
+                   "confirmed_cause", "cause_confirmed_by", "sample_collected",
+                   "necropsy_conducted", "necropsy_carried_out_by", "general"]
+    list_columns = ["stranding_code", "turtle_disposition", "suspected_cause",
+                    "confirmed_cause", "cause_confirmed_by", "sample_collected",
+                    "necropsy_conducted", "necropsy_carried_out_by"]
+    show_columns = ["stranding_code", "turtle_disposition", "suspected_cause",
+                    "confirmed_cause", "cause_confirmed_by", "sample_collected",
+                    "necropsy_conducted", "necropsy_carried_out_by"] +\
+                   ['created_by', 'created_on', 'changed_by', 'changed_on']
+    edit_columns = ["stranding_code", "turtle_disposition", "suspected_cause",
+                    "confirmed_cause", "cause_confirmed_by", "sample_collected",
+                    "necropsy_conducted", "necropsy_carried_out_by", "general"]
     # related_views = []
     add_title = 'Add Stranding'
     show_title = 'Stranding'
     list_title = 'Stranding'
     edit_title = 'Edit Stranding'
-    """
     label_columns = {
-        "": ""
+        "stranding_code": "Stranding Code",
+        "turtle_disposition": "Disposition of Turtle",
+        "suspected_cause": "Suspected cause",
+        "confirmed_cause": "Confirmed cause",
+        "cause_confirmed_by": "Stranding cause confirmed by",
+        "sample_collected": "Tissue sample collected?",
+        "necropsy_conducted": "Was necropsy conducted?",
+        "necropsy_carried_out_by": "Necropsy carried out by"
     }
+    """
     validators_columns = {}
     _conditional_relations = [
     ]
@@ -727,23 +739,35 @@ class PawikanStrandingView(BaseModamaView):
 class PawikanTaggingView(BaseModamaView):
     _pretty_name = 'Tagging'
     datamodel = GeoSQLAInterface(PawikanTagging)
-    # add_columns = ["new_tags_right", "existing_tags_right", "replacement_tags_right", "new_tags_left", "id", "existing_tags_left", "replacement_tags_left", "existing_tags_origin"] +\
-    #               ["general"]
-    # list_columns = ["new_tags_right", "existing_tags_right", "replacement_tags_right", "new_tags_left", "id", "existing_tags_left", "replacement_tags_left", "existing_tags_origin"] +\
-    #                ["general"]
-    # edit_columns = ["new_tags_right", "existing_tags_right", "replacement_tags_right", "new_tags_left", "id", "existing_tags_left", "replacement_tags_left", "existing_tags_origin"]
-    # show_columns = ["new_tags_right", "existing_tags_right", "replacement_tags_right", "new_tags_left", "id", "existing_tags_left", "replacement_tags_left", "existing_tags_origin"] +\
-    #                ["general"] +\
-    #                [""]
-    # related_views = []
+    add_columns = ["existing_tags_origin", "existing_tags_left",
+                   "existing_tags_right", "new_tags_left", "new_tags_right",
+                   "replacement_tags_left", "replacement_tags_right",
+                   "general"]
+    show_columns = ["existing_tags_origin", "existing_tags_left",
+                    "existing_tags_right", "new_tags_left", "new_tags_right",
+                    "replacement_tags_left", "replacement_tags_right"] +\
+                   ['created_by', 'created_on', 'changed_by', 'changed_on']
+    edit_columns = ["existing_tags_origin", "existing_tags_left",
+                    "existing_tags_right", "new_tags_left", "new_tags_right",
+                    "replacement_tags_left", "replacement_tags_right"]
+    list_columns = ["existing_tags_origin", "existing_tags_left",
+                    "existing_tags_right", "new_tags_left", "new_tags_right",
+                    "replacement_tags_left", "replacement_tags_right"]
+
     add_title = 'Add Tagging'
     show_title = 'Tagging'
     list_title = 'Tagging'
     edit_title = 'Edit Tagging'
-    """
     label_columns = {
-        "": ""
+        "existing_tags_origin": "Origin of existing tags",
+        "existing_tags_left": "Existing tags left",
+        "existing_tags_right": "Existing tags right",
+        "new_tags_left": "New tags left",
+        "new_tags_right": "New tags right",
+        "replacement_tags_left": "Replacement tags left",
+        "replacement_tags_right": "Replacement tags right"
     }
+    """
     validators_columns = {}
     _conditional_relations = [
     ]
@@ -753,12 +777,12 @@ class PawikanTaggingView(BaseModamaView):
 class PawikanNestEvaluationView(BaseModamaView):
     _pretty_name = 'Nest Evaluation'
     datamodel = GeoSQLAInterface(PawikanNestEvaluation)
-    # add_columns = ["num_eggs_din", "num_eggs_uh", "number_of_eggs_known", "num_eggs_s", "nest_id", "num_eggs_lin", "num_eggs_p", "num_eggs_uht", "num_eggs_ud", "id", "num_eggs_dpe", "num_emerged", "num_eggs_lpe"] +\
+    # add_columns = ["num_eggs_din", "num_eggs_uh", "number_of_eggs_known", "num_eggs_s", "nest_id", "num_eggs_lin", "num_eggs_p", "num_eggs_uht", "num_eggs_ud", "num_eggs_dpe", "num_emerged", "num_eggs_lpe"] +\
     #               ["general"]
-    # list_columns = ["num_eggs_din", "num_eggs_uh", "number_of_eggs_known", "num_eggs_s", "nest_id", "num_eggs_lin", "num_eggs_p", "num_eggs_uht", "num_eggs_ud", "id", "num_eggs_dpe", "num_emerged", "num_eggs_lpe"] +\
+    # list_columns = ["num_eggs_din", "num_eggs_uh", "number_of_eggs_known", "num_eggs_s", "nest_id", "num_eggs_lin", "num_eggs_p", "num_eggs_uht", "num_eggs_ud", "num_eggs_dpe", "num_emerged", "num_eggs_lpe"] +\
     #                ["general"]
-    # edit_columns = ["num_eggs_din", "num_eggs_uh", "number_of_eggs_known", "num_eggs_s", "nest_id", "num_eggs_lin", "num_eggs_p", "num_eggs_uht", "num_eggs_ud", "id", "num_eggs_dpe", "num_emerged", "num_eggs_lpe"]
-    # show_columns = ["num_eggs_din", "num_eggs_uh", "number_of_eggs_known", "num_eggs_s", "nest_id", "num_eggs_lin", "num_eggs_p", "num_eggs_uht", "num_eggs_ud", "id", "num_eggs_dpe", "num_emerged", "num_eggs_lpe"] +\
+    # edit_columns = ["num_eggs_din", "num_eggs_uh", "number_of_eggs_known", "num_eggs_s", "nest_id", "num_eggs_lin", "num_eggs_p", "num_eggs_uht", "num_eggs_ud", "num_eggs_dpe", "num_emerged", "num_eggs_lpe"]
+    # show_columns = ["num_eggs_din", "num_eggs_uh", "number_of_eggs_known", "num_eggs_s", "nest_id", "num_eggs_lin", "num_eggs_p", "num_eggs_uht", "num_eggs_ud", "num_eggs_dpe", "num_emerged", "num_eggs_lpe"] +\
     #                ["general"] +\
     #                [""]
     # related_views = []

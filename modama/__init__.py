@@ -12,6 +12,7 @@ from sqlalchemy import orm
 from sqlalchemy_continuum import make_versioned
 from .security.views import OrganizationView
 from flask_babel import lazy_gettext as _
+import jinja2
 
 APP_DIR = os.path.dirname(__file__)
 
@@ -46,6 +47,15 @@ log.info("Running in debug mode: {}".format(app.debug))
 
 if app.debug:
     cors = CORS(app)
+
+
+@jinja2.contextfunction
+def get_context(c):
+    return c
+
+
+app.jinja_env.globals['context'] = get_context
+app.jinja_env.globals['callable'] = callable
 
 sess = Session(app)
 db = SQLA(app)
