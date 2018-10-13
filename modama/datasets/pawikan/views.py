@@ -1,41 +1,55 @@
 
-from flask_appbuilder.models.sqla.interface import SQLAInterface
 from flask_appbuilder import ModelView
 from modama import appbuilder
-from modama.views.dataset_base import BaseObservationView, BaseVerificationView
+from modama.views.dataset_base import BaseObservationView
 from wtforms.validators import NumberRange
 from fab_addon_geoalchemy.models import GeoSQLAInterface
-from wtforms_jsonschema2.conditions import oneOf
-from modama.datasets.pawikan.models import (PawikanInwaterType, PawikanNestWithEgg, PawikanHatchlingLocation, PawikanInwaterActivityType, PawikanFacilityEncountered, PawikanOutcome, PawikanFishingTurtleCondition, PawikanNestEvaluation, PawikanTradeTurtleDisposition, PawikanTradeTurtleCondition, PawikanNestingActionTaken, PawikanStranding, PawikanStrandingCause, PawikanFisheriesInteraction,
-                                            PawikanLocationType, PawikanNestType, PawikanEncounterType, PawikanFishingTurtleDisposition, PawikanSpecies, PawikanFishingGear, PawikanInWater, PawikanTradeExhibitType, PawikanGeneral, PawikanTradeExhibit, PawikanGeneralPicture, PawikanHatchlings, PawikanStrandingTurtleDisposition, PawikanTagging, PawikanInwaterTurtleActivity, PawikanHatchlingDisposition)
+from flask_babel import gettext as _
+import logging
+# from wtforms_jsonschema2.conditions import oneOf
+
+from modama.datasets.pawikan.models import (
+    #  PawikanInwaterType, PawikanHatchlingLocation,
+    #  PawikanInwaterActivityType, PawikanFacilityEncountered, PawikanOutcome,
+    #  PawikanFishingTurtleCondition,
+    #  PawikanTradeTurtleDisposition, PawikanTradeTurtleCondition,
+    #  PawikanNestingActionTaken, PawikanStrandingCause,
+    #  PawikanLocationType, PawikanNestType,
+    #  PawikanEncounterType, PawikanFishingTurtleDisposition,
+    #  PawikanFishingGear, PawikanTradeExhibitType,
+    #  PawikanInwaterTurtleActivity, PawikanHatchlingDisposition,
+    #  PawikanStrandingTurtleDisposition,
+    PawikanGeneral, PawikanStranding, PawikanTradeExhibit, PawikanInWater,
+    PawikanFisheriesInteraction, PawikanGeneralPicture, PawikanSpecies,
+    PawikanHatchlings, PawikanTagging, PawikanNestWithEgg,
+    PawikanNestEvaluation)
+
+
+log = logging.getLogger(__name__)
 
 
 class PawikanGeneralPictureView(ModelView):
     _pretty_name = 'General Picture'
     datamodel = GeoSQLAInterface(PawikanGeneralPicture)
-    # add_columns = ["picture", "id"] +\
-    #               ["general"]
-    # list_columns = ["picture", "id"] +\
-    #                ["general"]
-    # edit_columns = ["picture", "id"]
-    # show_columns = ["picture", "id"] +\
-    #                ["general"] +\
-    #                ["created_on", "created_by", "changed_by", "changed_on"]
-    # related_views = []
-    add_title = 'Add General Picture'
-    show_title = 'General Picture'
-    list_title = 'General Pictures'
-    edit_title = 'Edit General Picture'
+    add_columns = ["picture", "general"]
+    list_columns = ["picture_img_thumbnail"]
+    edit_columns = ["picture"]
+    show_columns = ["picture_img"]
+    add_title = 'Add Picture'
+    show_title = 'Picture'
+    list_title = 'Pictures'
+    edit_title = 'Edit Picture'
     """
     label_columns = {
         "": ""
     }
-    validator_columns = {}
+    validators_columns = {}
     _conditional_relations = [
     ]
     """
 
 
+'''
 class PawikanNestingActionTakenView(ModelView):
     _pretty_name = 'Nesting Action Taken'
     datamodel = GeoSQLAInterface(PawikanNestingActionTaken)
@@ -56,7 +70,7 @@ class PawikanNestingActionTakenView(ModelView):
     label_columns = {
         "nest_encounters": ""
     }
-    validator_columns = {}
+    validators_columns = {}
     _conditional_relations = [
     ]
     """
@@ -82,7 +96,7 @@ class PawikanTradeExhibitTypeView(ModelView):
     label_columns = {
         "trade_exhibit_encounters": ""
     }
-    validator_columns = {}
+    validators_columns = {}
     _conditional_relations = [
     ]
     """
@@ -108,33 +122,7 @@ class PawikanInwaterTurtleActivityView(ModelView):
     label_columns = {
         "inwater_encounters": ""
     }
-    validator_columns = {}
-    _conditional_relations = [
-    ]
-    """
-
-
-class PawikanInWaterView(ModelView):
-    _pretty_name = 'In Water'
-    datamodel = GeoSQLAInterface(PawikanInWater)
-    # add_columns = ["id", "detailed_location", "depth"] +\
-    #               ["inwater_encounter_type", "general", "your_activity", "turtle_activity"]
-    # list_columns = ["id", "detailed_location", "depth"] +\
-    #                ["inwater_encounter_type", "general", "your_activity", "turtle_activity"]
-    # edit_columns = ["id", "detailed_location", "depth"]
-    # show_columns = ["id", "detailed_location", "depth"] +\
-    #                ["inwater_encounter_type", "general", "your_activity", "turtle_activity"] +\
-    #                [""]
-    # related_views = []
-    add_title = 'Add In Water'
-    show_title = 'In Water'
-    list_title = 'In Waters'
-    edit_title = 'Edit In Water'
-    """
-    label_columns = {
-        "": ""
-    }
-    validator_columns = {}
+    validators_columns = {}
     _conditional_relations = [
     ]
     """
@@ -160,7 +148,7 @@ class PawikanEncounterTypeView(ModelView):
     label_columns = {
         "general_reports": ""
     }
-    validator_columns = {}
+    validators_columns = {}
     _conditional_relations = [
     ]
     """
@@ -186,7 +174,7 @@ class PawikanFacilityEncounteredView(ModelView):
     label_columns = {
         "trade_exhibit_encounters": ""
     }
-    validator_columns = {}
+    validators_columns = {}
     _conditional_relations = [
     ]
     """
@@ -212,7 +200,7 @@ class PawikanFishingTurtleConditionView(ModelView):
     label_columns = {
         "fisheries_interactions": ""
     }
-    validator_columns = {}
+    validators_columns = {}
     _conditional_relations = [
     ]
     """
@@ -238,7 +226,7 @@ class PawikanStrandingCauseView(ModelView):
     label_columns = {
         "": ""
     }
-    validator_columns = {}
+    validators_columns = {}
     _conditional_relations = [
     ]
     """
@@ -264,7 +252,7 @@ class PawikanTradeTurtleConditionView(ModelView):
     label_columns = {
         "trade_exhibit_encounters": ""
     }
-    validator_columns = {}
+    validators_columns = {}
     _conditional_relations = [
     ]
     """
@@ -290,7 +278,7 @@ class PawikanHatchlingLocationView(ModelView):
     label_columns = {
         "hatchling_encounters": ""
     }
-    validator_columns = {}
+    validators_columns = {}
     _conditional_relations = [
     ]
     """
@@ -316,33 +304,7 @@ class PawikanLocationTypeView(ModelView):
     label_columns = {
         "": ""
     }
-    validator_columns = {}
-    _conditional_relations = [
-    ]
-    """
-
-
-class PawikanFisheriesInteractionView(ModelView):
-    _pretty_name = 'Fisheries Interaction'
-    datamodel = GeoSQLAInterface(PawikanFisheriesInteraction)
-    # add_columns = ["id", "vessel_details", "fisher_details"] +\
-    #               ["turtle_disposition", "general", "gear_used", "turtle_condition"]
-    # list_columns = ["id", "vessel_details", "fisher_details"] +\
-    #                ["turtle_disposition", "general", "gear_used", "turtle_condition"]
-    # edit_columns = ["id", "vessel_details", "fisher_details"]
-    # show_columns = ["id", "vessel_details", "fisher_details"] +\
-    #                ["turtle_disposition", "general", "gear_used", "turtle_condition"] +\
-    #                [""]
-    # related_views = []
-    add_title = 'Add Fisheries Interaction'
-    show_title = 'Fisheries Interaction'
-    list_title = 'Fisheries Interactions'
-    edit_title = 'Edit Fisheries Interaction'
-    """
-    label_columns = {
-        "": ""
-    }
-    validator_columns = {}
+    validators_columns = {}
     _conditional_relations = [
     ]
     """
@@ -368,7 +330,7 @@ class PawikanNestTypeView(ModelView):
     label_columns = {
         "nest_encounters": ""
     }
-    validator_columns = {}
+    validators_columns = {}
     _conditional_relations = [
     ]
     """
@@ -394,7 +356,7 @@ class PawikanFishingTurtleDispositionView(ModelView):
     label_columns = {
         "fisheries_interactions": ""
     }
-    validator_columns = {}
+    validators_columns = {}
     _conditional_relations = [
     ]
     """
@@ -420,7 +382,7 @@ class PawikanStrandingTurtleDispositionView(ModelView):
     label_columns = {
         "": ""
     }
-    validator_columns = {}
+    validators_columns = {}
     _conditional_relations = [
     ]
     """
@@ -446,7 +408,7 @@ class PawikanInwaterActivityTypeView(ModelView):
     label_columns = {
         "inwater_encounters": ""
     }
-    validator_columns = {}
+    validators_columns = {}
     _conditional_relations = [
     ]
     """
@@ -472,7 +434,7 @@ class PawikanFishingGearView(ModelView):
     label_columns = {
         "fisheries_interactions": ""
     }
-    validator_columns = {}
+    validators_columns = {}
     _conditional_relations = [
     ]
     """
@@ -498,7 +460,7 @@ class PawikanInwaterTypeView(ModelView):
     label_columns = {
         "inwater_encounters": ""
     }
-    validator_columns = {}
+    validators_columns = {}
     _conditional_relations = [
     ]
     """
@@ -524,7 +486,7 @@ class PawikanTradeTurtleDispositionView(ModelView):
     label_columns = {
         "trade_exhibit_encounter": ""
     }
-    validator_columns = {}
+    validators_columns = {}
     _conditional_relations = [
     ]
     """
@@ -550,7 +512,7 @@ class PawikanHatchlingDispositionView(ModelView):
     label_columns = {
         "hatchling_encounters": ""
     }
-    validator_columns = {}
+    validators_columns = {}
     _conditional_relations = [
     ]
     """
@@ -576,11 +538,64 @@ class PawikanOutcomeView(ModelView):
     label_columns = {
         "general_reports": ""
     }
-    validator_columns = {}
+    validators_columns = {}
     _conditional_relations = [
     ]
     """
 
+'''
+
+
+class PawikanFisheriesInteractionView(ModelView):
+    _pretty_name = 'Fisheries Interaction'
+    datamodel = GeoSQLAInterface(PawikanFisheriesInteraction)
+    # add_columns = ["id", "vessel_details", "fisher_details"] +\
+    #               ["turtle_disposition", "general", "gear_used", "turtle_condition"]
+    # list_columns = ["id", "vessel_details", "fisher_details"] +\
+    #                ["turtle_disposition", "general", "gear_used", "turtle_condition"]
+    # edit_columns = ["id", "vessel_details", "fisher_details"]
+    # show_columns = ["id", "vessel_details", "fisher_details"] +\
+    #                ["turtle_disposition", "general", "gear_used", "turtle_condition"] +\
+    #                [""]
+    # related_views = []
+    add_title = 'Add Fisheries Interaction'
+    show_title = 'Fisheries Interaction'
+    list_title = 'Fisheries Interactions'
+    edit_title = 'Edit Fisheries Interaction'
+    """
+    label_columns = {
+        "": ""
+    }
+    validators_columns = {}
+    _conditional_relations = [
+    ]
+    """
+
+
+class PawikanInWaterView(ModelView):
+    _pretty_name = 'In Water'
+    datamodel = GeoSQLAInterface(PawikanInWater)
+    # add_columns = ["id", "detailed_location", "depth"] +\
+    #               ["inwater_encounter_type", "general", "your_activity", "turtle_activity"]
+    # list_columns = ["id", "detailed_location", "depth"] +\
+    #                ["inwater_encounter_type", "general", "your_activity", "turtle_activity"]
+    # edit_columns = ["id", "detailed_location", "depth"]
+    # show_columns = ["id", "detailed_location", "depth"] +\
+    #                ["inwater_encounter_type", "general", "your_activity", "turtle_activity"] +\
+    #                [""]
+    # related_views = []
+    add_title = 'Add In Water'
+    show_title = 'In Water'
+    list_title = 'In Water'
+    edit_title = 'Edit In Water'
+    """
+    label_columns = {
+        "": ""
+    }
+    validators_columns = {}
+    _conditional_relations = [
+    ]
+    """
 
 class PawikanNestWithEggView(ModelView):
     _pretty_name = 'Nest With Egg'
@@ -596,17 +611,16 @@ class PawikanNestWithEggView(ModelView):
     # related_views = []
     add_title = 'Add Nest With Egg'
     show_title = 'Nest With Egg'
-    list_title = 'Nest With Eggs'
+    list_title = 'Nests With Egg'
     edit_title = 'Edit Nest With Egg'
     """
     label_columns = {
         "": ""
     }
-    validator_columns = {}
+    validators_columns = {}
     _conditional_relations = [
     ]
     """
-
 
 class PawikanTradeExhibitView(ModelView):
     _pretty_name = 'Trade Exhibit'
@@ -620,15 +634,15 @@ class PawikanTradeExhibitView(ModelView):
     #                ["turtle_disposition", "facility_encountered", "turtle_condition", "general", "trade_exhibit_type"] +\
     #                [""]
     # related_views = []
-    add_title = 'Add Trade Exhibit'
-    show_title = 'Trade Exhibit'
-    list_title = 'Trade Exhibits'
-    edit_title = 'Edit Trade Exhibit'
+    add_title = 'Add Trade/Exhibit'
+    show_title = 'Trade/Exhibit'
+    list_title = 'Trade/Exhibit'
+    edit_title = 'Edit Trade/Exhibit'
     """
     label_columns = {
         "": ""
     }
-    validator_columns = {}
+    validators_columns = {}
     _conditional_relations = [
     ]
     """
@@ -648,13 +662,13 @@ class PawikanSpeciesView(ModelView):
     # related_views = [PawikanGeneralView]
     add_title = 'Add Species'
     show_title = 'Species'
-    list_title = 'Speciess'
+    list_title = 'Species'
     edit_title = 'Edit Species'
     """
     label_columns = {
         "general_reports": ""
     }
-    validator_columns = {}
+    validators_columns = {}
     _conditional_relations = [
     ]
     """
@@ -674,13 +688,13 @@ class PawikanHatchlingsView(ModelView):
     # related_views = []
     add_title = 'Add Hatchlings'
     show_title = 'Hatchlings'
-    list_title = 'Hatchlingss'
+    list_title = 'Hatchlings'
     edit_title = 'Edit Hatchlings'
     """
     label_columns = {
         "": ""
     }
-    validator_columns = {}
+    validators_columns = {}
     _conditional_relations = [
     ]
     """
@@ -700,13 +714,13 @@ class PawikanStrandingView(ModelView):
     # related_views = []
     add_title = 'Add Stranding'
     show_title = 'Stranding'
-    list_title = 'Strandings'
+    list_title = 'Stranding'
     edit_title = 'Edit Stranding'
     """
     label_columns = {
         "": ""
     }
-    validator_columns = {}
+    validators_columns = {}
     _conditional_relations = [
     ]
     """
@@ -726,13 +740,13 @@ class PawikanTaggingView(ModelView):
     # related_views = []
     add_title = 'Add Tagging'
     show_title = 'Tagging'
-    list_title = 'Taggings'
+    list_title = 'Tagging'
     edit_title = 'Edit Tagging'
     """
     label_columns = {
         "": ""
     }
-    validator_columns = {}
+    validators_columns = {}
     _conditional_relations = [
     ]
     """
@@ -752,13 +766,13 @@ class PawikanNestEvaluationView(ModelView):
     # related_views = []
     add_title = 'Add Nest Evaluation'
     show_title = 'Nest Evaluation'
-    list_title = 'Nest Evaluations'
+    list_title = 'Nest Evaluation'
     edit_title = 'Edit Nest Evaluation'
     """
     label_columns = {
         "": ""
     }
-    validator_columns = {}
+    validators_columns = {}
     _conditional_relations = [
     ]
     """
@@ -768,39 +782,38 @@ class PawikanGeneralView(BaseObservationView):
     _pretty_name = 'General'
     datamodel = GeoSQLAInterface(PawikanGeneral)
     add_columns = BaseObservationView._base_add +\
-        ["observation_datetime", "location", "location_type", "barangay",
+        ["location", "location_type",  # "barangay",
          "alive", "species", "lateral_scutes", "prefrontal_scutes",
          "encounter_type", "incident_description", "sex",
          "curved_carapace_length", "origin_of_report", "report_generator",
          "tagged", "outcome"]
     list_columns = BaseObservationView._base_list +\
-        ["observation_datetime", "location", "location_type", "barangay",
-         "alive", "species", "lateral_scutes", "prefrontal_scutes",
-         "encounter_type", "incident_description", "sex",
-         "curved_carapace_length", "origin_of_report", "report_generator",
-         "tagged", "pictures", "outcome",
-         "tagging", "inwater", "hatchlings", "trade_exhibit", "stranding",
-         "nest_with_egg", "fisheries_interaction", "nest_evaluation"]
+        [
+            # "location", "location_type", "barangay",
+            "alive", "species", "lateral_scutes", "prefrontal_scutes",
+            "encounter_type", "incident_description", "sex",
+            "curved_carapace_length", "origin_of_report", "report_generator",
+            "tagged", "num_pictures", "outcome"]
+    # "tagging", "inwater", "hatchlings", "trade_exhibit", "stranding",
+    # "nest_with_egg", "fisheries_interaction", "nest_evaluation"]
     edit_columns = BaseObservationView._base_edit +\
-        ["observation_datetime", "location", "location_type", "barangay",
+        ["location", "location_type",  # "barangay",
          "alive", "species", "lateral_scutes", "prefrontal_scutes",
          "encounter_type", "incident_description", "sex",
          "curved_carapace_length", "origin_of_report", "report_generator",
-         "tagged", "pictures", "outcome",
-         "tagging", "inwater", "hatchlings", "trade_exhibit", "stranding",
-         "nest_with_egg", "fisheries_interaction", "nest_evaluation"]
+         ]  # "tagged", "pictures", "outcome"]
     show_columns = BaseObservationView._base_show +\
-        ["observation_datetime", "location", "location_type", "barangay",
-         "alive", "species", "lateral_scutes", "prefrontal_scutes",
-         "encounter_type", "incident_description", "sex",
-         "curved_carapace_length", "origin_of_report", "report_generator",
-         "tagged", "pictures", "outcome",
-         "tagging", "inwater", "hatchlings", "trade_exhibit", "stranding",
-         "nest_with_egg", "fisheries_interaction", "nest_evaluation"] +\
-        ["created_on", "created_by", "changed_by", "changed_on", "report_id"]
+        [
+            #  "location", "location_type",  # "barangay",
+            "alive", "species", "lateral_scutes", "prefrontal_scutes",
+            "encounter_type", "incident_description", "sex",
+            "curved_carapace_length", "origin_of_report", "report_generator",
+            "tagged", "num_pictures", "outcome"]
+    # "tagging", "inwater", "hatchlings", "trade_exhibit", "stranding",
+    # "nest_with_egg", "fisheries_interaction", "nest_evaluation"] +\
     search_exclude_columns = ["report_id", "location"]
-    related_views = [PawikanTaggingView, PawikanInWaterView,
-                     PawikanGeneralPictureView, PawikanHatchlingsView,
+    related_views = [PawikanGeneralPictureView, PawikanTaggingView,
+                     PawikanInWaterView, PawikanHatchlingsView,
                      PawikanTradeExhibitView, PawikanStrandingView,
                      PawikanNestWithEggView, PawikanFisheriesInteractionView,
                      PawikanNestEvaluationView]
@@ -813,6 +826,7 @@ class PawikanGeneralView(BaseObservationView):
         "location": "Location of encounter",
         "location_type": "Type of this location",
         "barangay": "Barangay/Municipality/Province",
+        "num_pictures": "Number of photos",
         "alive": "Is the turtle alive or dead?",
         "species": "Turtle Species",
         "lateral_scutes": "One side lateral scutes count",
@@ -835,42 +849,95 @@ class PawikanGeneralView(BaseObservationView):
         "fisheries_interaction": "Fisheries Interaction",
         "nest_evaluation": "Nest evaluation"
     }
+    validators_columns = {
+        'curved_carapace_length': [
+            NumberRange(
+                min=50, max=500,
+                message=_("Please fill in a value between 50cm and 500cm."))
+        ]
+    }
     """
-    validator_columns = {}
     _conditional_relations = [
     ]
     """
 
+    # def _get_related_views_widgets(self, item, *args, **kwargs):
+    #     log.debug("Getting related views widgets for {}".format(item))
+    #     widgets = super()._get_related_views_widgets(item, *args, **kwargs)
+    #     for widget in widgets['related_views']:
+    #         log.debug("Got widget {}".format(widget))
+    #     return widgets
+
+    def _get_related_view_widget(self, item, related_view,
+                                 order_column='', order_direction='',
+                                 page=None, page_size=None):
+
+        log.debug("Getting view for {}".format(related_view))
+        fk = related_view.datamodel.get_related_fk(self.datamodel.obj)
+        filters = related_view.datamodel.get_filters()
+        # Check if it's a many to one model relation
+        if related_view.datamodel.is_relation_many_to_one(fk):
+            filters.add_filter_related_view(
+                fk, self.datamodel.FilterRelationOneToManyEqual,
+                self.datamodel.get_pk_value(item))
+        # Check if it's a many to many model relation
+        elif related_view.datamodel.is_relation_many_to_many(fk):
+            filters.add_filter_related_view(
+                fk, self.datamodel.FilterRelationManyToManyEqual,
+                self.datamodel.get_pk_value(item))
+        elif related_view.datamodel.is_relation_one_to_one(fk):
+            log.debug("Got a one-to-one relation")
+            backref = self.datamodel.get_related_fk(related_view.datamodel.obj)
+            rel_item = getattr(item, backref)
+            log.debug("backref {} rel_item {} item {}"
+                      .format(backref, rel_item, item))
+            if rel_item is not None:
+                rel_pk = related_view.datamodel.get_pk_value(rel_item)
+                return related_view._get_show_widget(rel_pk, rel_item)['show']
+            filters.add_filter_related_view(
+                fk, self.datamodel.FilterRelationOneToManyEqual,
+                self.datamodel.get_pk_value(item))
+        else:
+            log.error("Can't find relation on related view {0}"
+                      .format(related_view.name))
+            return None
+        log.debug("Got a different relation")
+        return related_view._get_view_widget(filters=filters,
+                                             order_column=order_column,
+                                             order_direction=order_direction,
+                                             page=page, page_size=page_size)
+
 
 appbuilder.add_view(PawikanGeneralView, "Encounters",
                     category="Pawikan")
-
+#  appbuilder.add_view(PawikanGeneralPictureView, "Pictures", category="Pawikan")
 appbuilder.add_view_no_menu(PawikanGeneralPictureView)
-appbuilder.add_view_no_menu(PawikanNestingActionTakenView)
-appbuilder.add_view_no_menu(PawikanTradeExhibitTypeView)
-appbuilder.add_view_no_menu(PawikanInwaterTurtleActivityView)
 appbuilder.add_view_no_menu(PawikanInWaterView)
-appbuilder.add_view_no_menu(PawikanEncounterTypeView)
-appbuilder.add_view_no_menu(PawikanFacilityEncounteredView)
-appbuilder.add_view_no_menu(PawikanFishingTurtleConditionView)
-appbuilder.add_view_no_menu(PawikanStrandingCauseView)
-appbuilder.add_view_no_menu(PawikanTradeTurtleConditionView)
-appbuilder.add_view_no_menu(PawikanHatchlingLocationView)
-appbuilder.add_view_no_menu(PawikanLocationTypeView)
-appbuilder.add_view_no_menu(PawikanFisheriesInteractionView)
-appbuilder.add_view_no_menu(PawikanNestTypeView)
-appbuilder.add_view_no_menu(PawikanFishingTurtleDispositionView)
-appbuilder.add_view_no_menu(PawikanStrandingTurtleDispositionView)
-appbuilder.add_view_no_menu(PawikanInwaterActivityTypeView)
-appbuilder.add_view_no_menu(PawikanFishingGearView)
-appbuilder.add_view_no_menu(PawikanInwaterTypeView)
-appbuilder.add_view_no_menu(PawikanTradeTurtleDispositionView)
-appbuilder.add_view_no_menu(PawikanHatchlingDispositionView)
-appbuilder.add_view_no_menu(PawikanOutcomeView)
-appbuilder.add_view_no_menu(PawikanNestWithEggView)
-appbuilder.add_view_no_menu(PawikanTradeExhibitView)
-appbuilder.add_view_no_menu(PawikanSpeciesView)
 appbuilder.add_view_no_menu(PawikanHatchlingsView)
 appbuilder.add_view_no_menu(PawikanStrandingView)
 appbuilder.add_view_no_menu(PawikanTaggingView)
 appbuilder.add_view_no_menu(PawikanNestEvaluationView)
+appbuilder.add_view_no_menu(PawikanNestWithEggView)
+appbuilder.add_view_no_menu(PawikanTradeExhibitView)
+appbuilder.add_view_no_menu(PawikanFisheriesInteractionView)
+
+#  appbuilder.add_view_no_menu(PawikanNestingActionTakenView)
+#  appbuilder.add_view_no_menu(PawikanTradeExhibitTypeView)
+#  appbuilder.add_view_no_menu(PawikanInwaterTurtleActivityView)
+#  appbuilder.add_view_no_menu(PawikanEncounterTypeView)
+#  appbuilder.add_view_no_menu(PawikanFacilityEncounteredView)
+#  appbuilder.add_view_no_menu(PawikanFishingTurtleConditionView)
+#  appbuilder.add_view_no_menu(PawikanStrandingCauseView)
+#  appbuilder.add_view_no_menu(PawikanTradeTurtleConditionView)
+#  appbuilder.add_view_no_menu(PawikanHatchlingLocationView)
+#  appbuilder.add_view_no_menu(PawikanLocationTypeView)
+#  appbuilder.add_view_no_menu(PawikanNestTypeView)
+#  appbuilder.add_view_no_menu(PawikanFishingTurtleDispositionView)
+#  appbuilder.add_view_no_menu(PawikanStrandingTurtleDispositionView)
+#  appbuilder.add_view_no_menu(PawikanInwaterActivityTypeView)
+#  appbuilder.add_view_no_menu(PawikanFishingGearView)
+#  appbuilder.add_view_no_menu(PawikanInwaterTypeView)
+#  appbuilder.add_view_no_menu(PawikanTradeTurtleDispositionView)
+#  appbuilder.add_view_no_menu(PawikanHatchlingDispositionView)
+#  appbuilder.add_view_no_menu(PawikanOutcomeView)
+#  appbuilder.add_view_no_menu(PawikanSpeciesView)

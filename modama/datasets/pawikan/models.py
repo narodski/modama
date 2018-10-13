@@ -2,9 +2,8 @@ from flask_appbuilder import Model
 from sqlalchemy import (Column, Integer, String, ForeignKey, Text,
                         UniqueConstraint, Enum, DateTime)
 from sqlalchemy.orm import relationship
-from modama.models.dataset_base import (BaseObservation, Sex, Barangay)
+from modama.models.dataset_base import (BaseObservation, Sex)  # , Barangay)
 from flask_appbuilder.models.mixins import ImageColumn
-from modama.models.common import ModamaAuditMixin
 from modama.utils import make_image
 from flask_appbuilder.filemanager import ImageManager
 from flask import url_for
@@ -13,8 +12,8 @@ import enum
 
 
 class PawikanYesNoEnum(enum.Enum):
-    Yes = 'yes'
-    No = 'no'
+    yes = 'Yes'
+    no = 'No'
 
 
 class PawikanBlackWhiteEnum(enum.Enum):
@@ -28,8 +27,8 @@ class PawikanTagOriginEnum(enum.Enum):
 
 
 class PawikanAliveDeadEnum(enum.Enum):
-    alive = 'alive'
-    dead = 'dead'
+    alive = 'Alive'
+    dead = 'Dead'
 
 
 class PawikanTradeUnitEnum(enum.Enum):
@@ -47,7 +46,7 @@ class PawikanStrandingCodeEnum(enum.Enum):
     code7 = "CODE 7"
 
 
-class PawikanGeneralPicture(Model, ModamaAuditMixin):
+class PawikanGeneralPicture(Model):
     id = Column(Integer, primary_key=True)
     picture = Column(ImageColumn(size=(2048, 2048, False),
                                  thumbnail_size=(800, 800, True)))
@@ -57,7 +56,7 @@ class PawikanGeneralPicture(Model, ModamaAuditMixin):
 
     def picture_img(self):
         im = ImageManager()
-        alt = str(self.encounter)
+        alt = str(self.general)
         link_url = url_for('PawikanGeneralPictureView.show', pk=self.id)
         if self.picture:
             return make_image(im.get_url(self.picture), link_url, alt)
@@ -66,7 +65,7 @@ class PawikanGeneralPicture(Model, ModamaAuditMixin):
 
     def picture_img_thumbnail(self):
         im = ImageManager()
-        alt = str(self.encounter)
+        alt = str(self.general)
         link_url = url_for('PawikanGeneralPictureView.show', pk=self.id)
         if self.picture:
             return make_image(im.get_url_thumbnail(self.picture),
@@ -172,8 +171,8 @@ class PawikanGeneral(BaseObservation):
     location_type_id = Column(Integer, ForeignKey('pawikan_location_type.id'),
                               nullable=False)
     location_type = relationship(PawikanLocationType)
-    barangay_id = Column(Integer, ForeignKey('barangay.id'), nullable=False)
-    barangay = relationship(Barangay)
+    # barangay_id = Column(Integer, ForeignKey('barangay.id'), nullable=False)
+    # barangay = relationship(Barangay)
 
     stranding = relationship("PawikanStranding", back_populates='general',
                              uselist=False)
@@ -181,10 +180,10 @@ class PawikanGeneral(BaseObservation):
                            uselist=False)
     tagging = relationship("PawikanTagging", back_populates='general',
                            uselist=False)
-    nest_with_egg = relationship("PawikanNestWithEgg",
-                                 back_populates='general', uselist=True)
-    nest_evaluation = relationship("PawikanNestEvaluation",
-                                   back_populates='general', uselist=True)
+    nests_with_egg = relationship("PawikanNestWithEgg",
+                                  back_populates='general')
+    nest_evaluations = relationship("PawikanNestEvaluation",
+                                    back_populates='general')
     hatchlings = relationship("PawikanHatchlings", back_populates='general',
                               uselist=False)
     trade_exhibit = relationship('PawikanTradeExhibit',
@@ -206,7 +205,7 @@ class PawikanGeneral(BaseObservation):
     origin_of_report = Column(Text)
     report_generator = Column(Text)
 
-    tagged = Column(Enum(PawikanYesNoEnum), nullable=False, default="No")
+    tagged = Column(Enum(PawikanYesNoEnum), nullable=False, default="no")
 
     outcome_id = Column(Integer, ForeignKey('pawikan_outcome.id'))
     outcome = relationship(PawikanOutcome, backref="general_reports")
@@ -220,7 +219,8 @@ class PawikanGeneral(BaseObservation):
     }
 
     def __repr__(self):
-        return "%s, %s" % (self.created_on, str(self.species))
+        return "%s, %s, %s" % (self.created_on, str(self.encounter_type),
+                               str(self.species))
 
 
 class PawikanStranding(Model):
@@ -346,16 +346,12 @@ class PawikanNestWithEgg(Model):
     id = Column(Integer, primary_key=True)
     general_id = Column(Integer, ForeignKey('pawikan_general.id'),
                         nullable=False)
-    general = relationship('PawikanGeneral', back_populates='nest_with_egg',
-                           uselist=True)
+    general = relationship('PawikanGeneral', back_populates='nests_with_egg')
 
     nest_type_id = Column(Integer, ForeignKey('pawikan_nest_type.id'),
                           nullable=False)
     nest_type = relationship(PawikanNestType, backref='nest_encounters')
 
-    barangay_id = Column(Integer, ForeignKey('barangay.id'), nullable=False)
-    barangay = relationship(Barangay)
-    location = Column(Geometry(geometry_type='POINT', srid=4326))
     detailed_location = Column(Text)
     nest_id = Column(String)
     action_taken_id = Column(Integer,
@@ -369,8 +365,8 @@ class PawikanNestEvaluation(Model):
     id = Column(Integer, primary_key=True)
     general_id = Column(Integer, ForeignKey('pawikan_general.id'),
                         nullable=False)
-    general = relationship('PawikanGeneral', back_populates='nest_evaluation',
-                           uselist=True)
+    general = relationship('PawikanGeneral',
+                           back_populates='nest_evaluations')
 
     number_of_eggs_known = Column(Enum(PawikanYesNoEnum), nullable=False)
     nest_id = Column(String)
@@ -397,21 +393,22 @@ class PawikanNestEvaluation(Model):
     @property
     def emergence_success(self):
         if self.num_emerged is not None and self.clutch_size > 0:
-            return int(round(self.num_emerged/self.clutch_size * 100, 0))
+            return int(round(self.num_emerged / self.clutch_size * 100, 0))
         elif all((self.num_eggs_s is not None, self.num_eggs_lin is not None,
                   self.num_eggs_din is not None and self.clutch_size > 0)):
-            return int(round((self.num_eggs_s - (self.num_eggs_lin
-                                                 + self.num_eggs_din)) /
+            return int(round((self.num_eggs_s - (self.num_eggs_lin +
+                                                 self.num_eggs_din)) /
                              self.clutch_size * 100, 0))
         return None
 
     @property
     def hatchling_success(self):
         if self.num_emerged is not None and self.clutch_size > 0:
-            return int(round((self.num_emerged + self.num_eggs_lin
-                              + self.num_eggs_din)/self.clutch_size * 100, 0))
+            return int(round((self.num_emerged + self.num_eggs_lin +
+                             self.num_eggs_din) /
+                             self.clutch_size * 100, 0))
         elif self.num_eggs_s is not None and self.clutch_size > 0:
-            return int(round(self.num_eggs_s/self.clutch_size * 100, 0))
+            return int(round(self.num_eggs_s / self.clutch_size * 100, 0))
         return None
 
 

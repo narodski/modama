@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: 6c118747dd6a
-Revises: 4aebd26bcae1
-Create Date: 2018-10-11 11:08:28.586169
+Revision ID: 384c843f4688
+Revises: d01d93a1dfd9
+Create Date: 2018-10-12 12:51:16.719907
 
 """
 from alembic import op
@@ -12,8 +12,8 @@ import flask_appbuilder
 
 
 # revision identifiers, used by Alembic.
-revision = '6c118747dd6a'
-down_revision = '4aebd26bcae1'
+revision = '384c843f4688'
+down_revision = 'd01d93a1dfd9'
 branch_labels = None
 depends_on = None
 
@@ -54,10 +54,9 @@ def upgrade():
     op.create_table('pawikan_general_version',
     sa.Column('id', sa.Integer(), autoincrement=False, nullable=False),
     sa.Column('encounter_type_id', sa.Integer(), autoincrement=False, nullable=True),
-    sa.Column('alive', sa.Enum('yes', 'no', name='pawikanyesnoenum'), autoincrement=False, nullable=True),
+    sa.Column('alive', sa.Enum('alive', 'dead', name='pawikanalivedeadenum'), autoincrement=False, nullable=True),
     sa.Column('location', geoalchemy2.types.Geometry(geometry_type='POINT', srid=4326), autoincrement=False, nullable=True),
     sa.Column('location_type_id', sa.Integer(), autoincrement=False, nullable=True),
-    sa.Column('barangay_id', sa.Integer(), autoincrement=False, nullable=True),
     sa.Column('species_id', sa.Integer(), autoincrement=False, nullable=True),
     sa.Column('lateral_scutes', sa.Integer(), autoincrement=False, nullable=True),
     sa.Column('prefrontal_scutes', sa.Integer(), autoincrement=False, nullable=True),
@@ -173,19 +172,43 @@ def upgrade():
     sa.Column('description', sa.Text(), nullable=True),
     sa.PrimaryKeyConstraint('id')
     )
+    op.create_table('region',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('psgc', sa.String(), nullable=False),
+    sa.Column('name', sa.String(), nullable=False),
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('psgc')
+    )
     op.create_table('transaction',
     sa.Column('issued_at', sa.DateTime(), nullable=True),
     sa.Column('id', sa.BigInteger(), nullable=False),
     sa.Column('remote_addr', sa.String(length=50), nullable=True),
     sa.PrimaryKeyConstraint('id')
     )
+    op.create_table('province',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('psgc', sa.String(), nullable=False),
+    sa.Column('name', sa.String(), nullable=False),
+    sa.Column('region_id', sa.Integer(), nullable=False),
+    sa.ForeignKeyConstraint(['region_id'], ['region.id'], ),
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('psgc')
+    )
+    op.create_table('municipality',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('name', sa.String(), nullable=False),
+    sa.Column('psgc', sa.String(), nullable=False),
+    sa.Column('province_id', sa.Integer(), nullable=False),
+    sa.ForeignKeyConstraint(['province_id'], ['province.id'], ),
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('psgc')
+    )
     op.create_table('pawikan_general',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('encounter_type_id', sa.Integer(), nullable=False),
-    sa.Column('alive', sa.Enum('yes', 'no', name='pawikanyesnoenum'), nullable=False),
+    sa.Column('alive', sa.Enum('alive', 'dead', name='pawikanalivedeadenum'), nullable=False),
     sa.Column('location', geoalchemy2.types.Geometry(geometry_type='POINT', srid=4326), nullable=True),
     sa.Column('location_type_id', sa.Integer(), nullable=False),
-    sa.Column('barangay_id', sa.Integer(), nullable=False),
     sa.Column('species_id', sa.Integer(), nullable=False),
     sa.Column('lateral_scutes', sa.Integer(), nullable=False),
     sa.Column('prefrontal_scutes', sa.Integer(), nullable=False),
@@ -196,7 +219,6 @@ def upgrade():
     sa.Column('report_generator', sa.Text(), nullable=True),
     sa.Column('tagged', sa.Enum('yes', 'no', name='pawikanyesnoenum'), nullable=False),
     sa.Column('outcome_id', sa.Integer(), nullable=True),
-    sa.ForeignKeyConstraint(['barangay_id'], ['barangay.id'], ),
     sa.ForeignKeyConstraint(['encounter_type_id'], ['pawikan_encounter_type.id'], ),
     sa.ForeignKeyConstraint(['id'], ['base_observation.id'], ),
     sa.ForeignKeyConstraint(['location_type_id'], ['pawikan_location_type.id'], ),
@@ -204,6 +226,15 @@ def upgrade():
     sa.ForeignKeyConstraint(['sex_id'], ['sex.id'], ),
     sa.ForeignKeyConstraint(['species_id'], ['pawikan_species.id'], ),
     sa.PrimaryKeyConstraint('id')
+    )
+    op.create_table('barangay',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('name', sa.String(), nullable=False),
+    sa.Column('psgc', sa.String(), nullable=False),
+    sa.Column('municipality_id', sa.Integer(), nullable=False),
+    sa.ForeignKeyConstraint(['municipality_id'], ['municipality.id'], ),
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('psgc')
     )
     op.create_table('pawikan_fisheries_interaction',
     sa.Column('id', sa.Integer(), nullable=False),
@@ -220,15 +251,9 @@ def upgrade():
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('pawikan_general_picture',
-    sa.Column('created_on', sa.DateTime(), nullable=False),
-    sa.Column('changed_on', sa.DateTime(), nullable=False),
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('picture', flask_appbuilder.models.mixins.ImageColumn(), nullable=True),
     sa.Column('general_id', sa.Integer(), nullable=False),
-    sa.Column('created_by_fk', sa.Integer(), nullable=False),
-    sa.Column('changed_by_fk', sa.Integer(), nullable=False),
-    sa.ForeignKeyConstraint(['changed_by_fk'], ['ab_user.id'], ),
-    sa.ForeignKeyConstraint(['created_by_fk'], ['ab_user.id'], ),
     sa.ForeignKeyConstraint(['general_id'], ['pawikan_general.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
@@ -284,14 +309,11 @@ def upgrade():
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('general_id', sa.Integer(), nullable=False),
     sa.Column('nest_type_id', sa.Integer(), nullable=False),
-    sa.Column('barangay_id', sa.Integer(), nullable=False),
-    sa.Column('location', geoalchemy2.types.Geometry(geometry_type='POINT', srid=4326), nullable=True),
     sa.Column('detailed_location', sa.Text(), nullable=True),
     sa.Column('nest_id', sa.String(), nullable=True),
     sa.Column('action_taken_id', sa.Integer(), nullable=True),
     sa.Column('area_secure', sa.Enum('yes', 'no', name='pawikanyesnoenum'), nullable=True),
     sa.ForeignKeyConstraint(['action_taken_id'], ['pawikan_nesting_action_taken.id'], ),
-    sa.ForeignKeyConstraint(['barangay_id'], ['barangay.id'], ),
     sa.ForeignKeyConstraint(['general_id'], ['pawikan_general.id'], ),
     sa.ForeignKeyConstraint(['nest_type_id'], ['pawikan_nest_type.id'], ),
     sa.PrimaryKeyConstraint('id')
@@ -343,11 +365,15 @@ def upgrade():
     sa.ForeignKeyConstraint(['turtle_disposition_id'], ['pawikan_trade_turtle_disposition.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
+    op.drop_column('base_observation', 'reporter_contact')
+    op.drop_column('base_observation', 'reporter')
     # ### end Alembic commands ###
 
 
 def downgrade():
     # ### commands auto generated by Alembic - please adjust! ###
+    op.add_column('base_observation', sa.Column('reporter', sa.VARCHAR(length=255), autoincrement=False, nullable=False))
+    op.add_column('base_observation', sa.Column('reporter_contact', sa.VARCHAR(length=255), autoincrement=False, nullable=False))
     op.drop_table('pawikan_trade_exhibit')
     op.drop_table('pawikan_tagging')
     op.drop_table('pawikan_stranding')
@@ -357,8 +383,12 @@ def downgrade():
     op.drop_table('pawikan_hatchlings')
     op.drop_table('pawikan_general_picture')
     op.drop_table('pawikan_fisheries_interaction')
+    op.drop_table('barangay')
     op.drop_table('pawikan_general')
+    op.drop_table('municipality')
+    op.drop_table('province')
     op.drop_table('transaction')
+    op.drop_table('region')
     op.drop_table('pawikan_trade_turtle_disposition')
     op.drop_table('pawikan_trade_turtle_condition')
     op.drop_table('pawikan_trade_exhibit_type')
