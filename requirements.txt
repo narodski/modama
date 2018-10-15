@@ -1,4 +1,5 @@
 -e git://github.com/dolfandringa/Flask-AppBuilder@develop#egg=flask-appbuilder
+autopep8
 fab-addon-geoalchemy
 wtforms_jsonschema2[fab]>=0.7.0
 eventlet
