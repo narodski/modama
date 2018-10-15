@@ -1,16 +1,15 @@
+-e git://github.com/dolfandringa/Flask-AppBuilder@develop#egg=flask-appbuilder
+fab-addon-geoalchemy
+wtforms_jsonschema2[fab]>=0.7.0
 eventlet
 pyjwt
 flask-cors
 flask-session
 flask-socketio
--e git://github.com/dolfandringa/Flask-AppBuilder@develop#egg=flask-appbuilder
-flask-Babel
 pillow
-fab-addon-geoalchemy
 psycopg2
 flask-migrate
 flask-script
-wtforms_jsonschema2[fab]
 python-dateutil
 tzlocal
 SQLAlchemy-Continuum
