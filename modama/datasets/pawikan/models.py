@@ -2,7 +2,7 @@ from sqlalchemy import (Column, Integer, String, ForeignKey, Text,
                         UniqueConstraint, Enum, DateTime)
 from sqlalchemy.orm import relationship
 from modama.models.common import ModamaAuditMixin
-from modama.models.dataset_base import (BaseObservation, Sex, Model, ModamaAuditMixin)
+from modama.models.dataset_base import (BaseObservation, Sex, Model)
 from flask_appbuilder.models.mixins import ImageColumn
 from modama.utils import make_image
 from flask_appbuilder.filemanager import ImageManager
@@ -74,7 +74,7 @@ class PawikanGeneralPicture(Model, ModamaAuditMixin):
             return make_image(None, link_url, alt)
 
 
-class PawikanSpecies(Model, ModamaAuditMixin):
+class PawikanSpecies(Model):
     id = Column(Integer, primary_key=True)
     genus = Column(String(255), nullable=False)
     species = Column(String(255), nullable=False)
@@ -112,7 +112,7 @@ class PawikanSpecies(Model, ModamaAuditMixin):
             return "%s %s" % (self.genus, self.species)
 
 
-class PawikanEncounterType(Model, ModamaAuditMixin):
+class PawikanEncounterType(Model):
     id = Column(Integer, primary_key=True)
     name = Column(String, nullable=False, unique=True)
     description = Column(Text)
@@ -121,16 +121,7 @@ class PawikanEncounterType(Model, ModamaAuditMixin):
         return str(self.name)
 
 
-class PawikanLocationType(Model, ModamaAuditMixin):
-    id = Column(Integer, primary_key=True)
-    name = Column(String, nullable=False)
-    description = Column(Text)
-
-    def __repr__(self):
-        return str(self.name)
-
-
-class PawikanOutcome(Model, ModamaAuditMixin):
+class PawikanLocationType(Model):
     id = Column(Integer, primary_key=True)
     name = Column(String, nullable=False, unique=True)
     description = Column(Text)
@@ -139,7 +130,7 @@ class PawikanOutcome(Model, ModamaAuditMixin):
         return str(self.name)
 
 
-class PawikanStrandingCause(Model, ModamaAuditMixin):
+class PawikanOutcome(Model):
     id = Column(Integer, primary_key=True)
     name = Column(String, nullable=False, unique=True)
     description = Column(Text)
@@ -148,7 +139,16 @@ class PawikanStrandingCause(Model, ModamaAuditMixin):
         return str(self.name)
 
 
-class PawikanStrandingTurtleDisposition(Model, ModamaAuditMixin):
+class PawikanStrandingCause(Model):
+    id = Column(Integer, primary_key=True)
+    name = Column(String, nullable=False, unique=True)
+    description = Column(Text)
+
+    def __repr__(self):
+        return str(self.name)
+
+
+class PawikanStrandingTurtleDisposition(Model):
     id = Column(Integer, primary_key=True)
     name = Column(String, nullable=False, unique=True)
     description = Column(Text)
@@ -171,6 +171,7 @@ class PawikanGeneral(BaseObservation):
     location_type_id = Column(Integer, ForeignKey('pawikan_location_type.id'),
                               nullable=False)
     location_type = relationship(PawikanLocationType)
+    detailed_location = Column(Text)
     # barangay_id = Column(Integer, ForeignKey('barangay.id'), nullable=False)
     # barangay = relationship(Barangay)
 
@@ -194,8 +195,8 @@ class PawikanGeneral(BaseObservation):
     species_id = Column(Integer, ForeignKey('pawikan_species.id'),
                         nullable=False)
     species = relationship(PawikanSpecies, backref='general_reports')
-    lateral_scutes = Column(Integer, nullable=False)
-    prefrontal_scutes = Column(Integer, nullable=False)
+    lateral_scutes = Column(Integer, nullable=True)
+    prefrontal_scutes = Column(Integer, nullable=True)
 
     incident_description = Column(Text)
     sex_id = Column(Integer, ForeignKey('sex.id'))
@@ -249,27 +250,27 @@ class PawikanStranding(Model, ModamaAuditMixin):
     necropsy_carried_out_by = Column(Text)
 
 
-class PawikanInwaterType(Model, ModamaAuditMixin):
+class PawikanInwaterType(Model):
     id = Column(Integer, primary_key=True)
-    name = Column(String, nullable=False)
+    name = Column(String, nullable=False, unique=True)
     description = Column(Text)
 
     def __repr__(self):
         return str(self.name)
 
 
-class PawikanInwaterActivityType(Model, ModamaAuditMixin):
+class PawikanInwaterActivityType(Model):
     id = Column(Integer, primary_key=True)
-    name = Column(String, nullable=False)
+    name = Column(String, nullable=False, unique=True)
     description = Column(Text)
 
     def __repr__(self):
         return str(self.name)
 
 
-class PawikanInwaterTurtleActivity(Model, ModamaAuditMixin):
+class PawikanInwaterTurtleActivity(Model):
     id = Column(Integer, primary_key=True)
-    name = Column(String, nullable=False)
+    name = Column(String, nullable=False, unique=True)
     description = Column(Text)
 
     def __repr__(self):
@@ -295,7 +296,6 @@ class PawikanInWater(Model, ModamaAuditMixin):
                               nullable=False)
     your_activity = relationship(PawikanInwaterActivityType,
                                  backref="inwater_encounters")
-    detailed_location = Column(Text)
     depth = Column(Integer)
 
     turtle_activity_id = Column(
@@ -323,18 +323,27 @@ class PawikanTagging(Model, ModamaAuditMixin):
     replacement_tags_right = Column(Text)
 
 
-class PawikanNestType(Model, ModamaAuditMixin):
+class PawikanNestType(Model):
     id = Column(Integer, primary_key=True)
-    name = Column(String, nullable=False)
+    name = Column(String, nullable=False, unique=True)
     description = Column(Text)
 
     def __repr__(self):
         return str(self.name)
 
 
-class PawikanNestingActionTaken(Model, ModamaAuditMixin):
+class PawikanNestEvaluationType(Model):
     id = Column(Integer, primary_key=True)
-    name = Column(String, nullable=False)
+    name = Column(String, nullable=False, unique=True)
+    description = Column(Text)
+
+    def __repr__(self):
+        return str(self.name)
+
+
+class PawikanNestingActionTaken(Model):
+    id = Column(Integer, primary_key=True)
+    name = Column(String, nullable=False, unique=True)
     description = Column(Text)
 
     def __repr__(self):
@@ -352,7 +361,8 @@ class PawikanNestWithEgg(Model, ModamaAuditMixin):
                           nullable=False)
     nest_type = relationship(PawikanNestType, backref='nest_encounters')
 
-    detailed_location = Column(Text)
+    nester_observed = Column(Enum(PawikanYesNoEnum), nullable=False)
+
     nest_id = Column(String)
     action_taken_id = Column(Integer,
                              ForeignKey('pawikan_nesting_action_taken.id'))
@@ -370,6 +380,11 @@ class PawikanNestEvaluation(Model, ModamaAuditMixin):
 
     number_of_eggs_known = Column(Enum(PawikanYesNoEnum), nullable=False)
     nest_id = Column(String)
+    nest_evaluation_type_id = Column(
+        Integer, ForeignKey('pawikan_nest_evaluation_type.id'), nullable=False)
+
+    nest_evaluation_type = relationship(PawikanNestEvaluationType,
+                                        backref='nest_evaluations')
 
     num_eggs_s = Column(Integer)
     num_eggs_uht = Column(Integer)
@@ -380,14 +395,15 @@ class PawikanNestEvaluation(Model, ModamaAuditMixin):
     num_eggs_p = Column(Integer)
     num_eggs_din = Column(Integer)
     num_eggs_lin = Column(Integer)
+    num_eggs_u = Column(Integer)
     num_emerged = Column(Integer)
 
     @property
     def clutch_size(self):
         return sum([i or 0 for i in [
-            self.num_emerged + self.num_eggs_lin + self.num_eggs_din +
-            self.num_eggs_ud + self.num_eggs_uh + self.num_eggs_uht +
-            self.num_eggs_dpe + self.num_eggs_lpe + self.num_eggs_p +
+            self.num_emerged, self.num_eggs_lin, self.num_eggs_din,
+            self.num_eggs_ud, self.num_eggs_uh, self.num_eggs_uht,
+            self.num_eggs_dpe, self.num_eggs_lpe, self.num_eggs_p,
             self.num_eggs_u]])
 
     @property
@@ -412,18 +428,18 @@ class PawikanNestEvaluation(Model, ModamaAuditMixin):
         return None
 
 
-class PawikanHatchlingLocation(Model, ModamaAuditMixin):
+class PawikanHatchlingLocation(Model):
     id = Column(Integer, primary_key=True)
-    name = Column(String, nullable=False)
+    name = Column(String, nullable=False, unique=True)
     description = Column(Text)
 
     def __repr__(self):
         return str(self.name)
 
 
-class PawikanHatchlingDisposition(Model, ModamaAuditMixin):
+class PawikanHatchlingDisposition(Model):
     id = Column(Integer, primary_key=True)
-    name = Column(String, nullable=False)
+    name = Column(String, nullable=False, unique=True)
     description = Column(Text)
 
     def __repr__(self):
@@ -458,36 +474,36 @@ class PawikanHatchlings(Model, ModamaAuditMixin):
     released = Column(Enum(PawikanYesNoEnum), nullable=False)
 
 
-class PawikanTradeExhibitType(Model, ModamaAuditMixin):
+class PawikanTradeExhibitType(Model):
     id = Column(Integer, primary_key=True)
-    name = Column(String, nullable=False)
+    name = Column(String, nullable=False, unique=True)
     description = Column(Text)
 
     def __repr__(self):
         return str(self.name)
 
 
-class PawikanFacilityEncountered(Model, ModamaAuditMixin):
+class PawikanFacilityEncountered(Model):
     id = Column(Integer, primary_key=True)
-    name = Column(String, nullable=False)
+    name = Column(String, nullable=False, unique=True)
     description = Column(Text)
 
     def __repr__(self):
         return str(self.name)
 
 
-class PawikanTradeTurtleCondition(Model, ModamaAuditMixin):
+class PawikanTradeTurtleCondition(Model):
     id = Column(Integer, primary_key=True)
-    name = Column(String, nullable=False)
+    name = Column(String, nullable=False, unique=True)
     description = Column(Text)
 
     def __repr__(self):
         return str(self.name)
 
 
-class PawikanTradeTurtleDisposition(Model, ModamaAuditMixin):
+class PawikanTradeTurtleDisposition(Model):
     id = Column(Integer, primary_key=True)
-    name = Column(String, nullable=False)
+    name = Column(String, nullable=False, unique=True)
     description = Column(Text)
 
     def __repr__(self):
@@ -528,27 +544,27 @@ class PawikanTradeExhibit(Model, ModamaAuditMixin):
     facility_contact_person = Column(Text)
 
 
-class PawikanFishingGear(Model, ModamaAuditMixin):
+class PawikanFishingGear(Model):
     id = Column(Integer, primary_key=True)
-    name = Column(String, nullable=False)
+    name = Column(String, nullable=False, unique=True)
     description = Column(Text)
 
     def __repr__(self):
         return str(self.name)
 
 
-class PawikanFishingTurtleCondition(Model, ModamaAuditMixin):
+class PawikanFishingTurtleCondition(Model):
     id = Column(Integer, primary_key=True)
-    name = Column(String, nullable=False)
+    name = Column(String, nullable=False, unique=True)
     description = Column(Text)
 
     def __repr__(self):
         return str(self.name)
 
 
-class PawikanFishingTurtleDisposition(Model, ModamaAuditMixin):
+class PawikanFishingTurtleDisposition(Model):
     id = Column(Integer, primary_key=True)
-    name = Column(String, nullable=False)
+    name = Column(String, nullable=False, unique=True)
     description = Column(Text)
 
     def __repr__(self):

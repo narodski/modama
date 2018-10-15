@@ -289,6 +289,7 @@ def load_base_data():
         print("Inserting Sex data")
         add(dataset_base.Sex(name='Male'))
         add(dataset_base.Sex(name='Female'))
+        add(dataset_base.Sex(name='Undetermined'))
         commit()
 
     for ds in _datasets:

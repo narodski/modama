@@ -41,6 +41,7 @@ def connect():
     user = login(token)
     if user is not None:
         datasets = FormService.getDatasets()
+        log.debug("Got the following datasets: {}".format(datasets))
         json_schema = FormService.getJsonSchema(datasets)
         log.info("Sending datasets %s" % json_schema)
         emit('newToken', token)

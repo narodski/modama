@@ -8,8 +8,6 @@
 {% set can_delete = "can_delete" | is_item_visible(modelview_name) %}
 
 
-{{ value_columns }}
-
 {% if fieldsets %}
 
     {% for fieldset_item in fieldsets %}

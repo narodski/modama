@@ -1,8 +1,14 @@
 from wtforms.widgets import HTMLString, html_params
-from wtforms import fields, widgets, TextField
-from flask_babel import lazy_gettext as _
 from flask_appbuilder.fieldwidgets import BS3TextFieldWidget
 
+
+class StaticTextWidget:
+    def __init__(self, html, **kwargs):
+        self.html = html
+        self.readonly = True
+
+    def __call__(self, field, **kwargs):
+        return self.html
 
 class ROTextFieldWidget(BS3TextFieldWidget):
     """

@@ -4,7 +4,7 @@ from modama import db
 from flask import g
 from flask_appbuilder.const import PERMISSION_PREFIX
 from wtforms_jsonschema2.geofab import GeoFABConverter
-from wtforms_jsonschema2.utils import _get_pretty_name
+from wtforms_jsonschema2.utils import _get_view_name
 from wtforms import fields
 from fab_addon_geoalchemy.fields import PointField
 import logging
@@ -12,6 +12,7 @@ from modama.exceptions import (UnkownDatasetError, UnkownFormError,
                                ValidationError)
 from dateutil import parser as dt_parser
 from tzlocal import get_localzone
+from werkzeug.datastructures import ImmutableMultiDict
 
 from flask_appbuilder.upload import ImageUploadField
 
@@ -71,7 +72,7 @@ class FormService(object):
             raise UnkownDatasetError(
                 "Dataset {} does not exist".format(datasetname))
         for v in dataset.mobile_views:
-            if _get_pretty_name(v, 'show') == formname \
+            if _get_view_name(v) == formname \
                     and cls.currentUserViewAccess(v, 'add'):
                 return v
         raise UnkownFormError(
@@ -88,28 +89,23 @@ class FormService(object):
 
     @classmethod
     def getForm(cls, view, formType='add'):
-        return getattr(view(), _FORMTYPES[formType])(csrf_enabled=False)
+        return getattr(view(), _FORMTYPES[formType])
 
     @classmethod
-    def processView(cls, view, data, ignore_validation=[]):
-        log.debug("Processing view {}".format(view))
-        # with data {}".format(view, data))
-        cols = view.add_columns
-        form = cls.getForm(view, 'add')
-        related_data = {}
-
+    def preprocessFormData(cls, form, cols, data):
         current_user = cls.getCurrentUser()
+
         filename_base = "".join([
             c for c in str(current_user).replace(' ', '_')
             if c.isalnum()]).rstrip()
 
         for col in cols:
-            field = getattr(form, col)
-            if col in ignore_validation:
-                field.vaidators = []
-            log.debug("Processing field {}".format(field))
-            # log.debug("With data: {}".format(data))
+            field = getattr(form(), col)
+            log.debug("Processing column {}".format(col))
             if col in data.keys():
+                if data[col] is None:
+                    del data[col]
+                    continue
                 if isinstance(field, PointField) and 'lat' in data[col].keys()\
                         and 'lon' in data[col].keys():
                     log.debug("Converting pointfield")
@@ -117,10 +113,8 @@ class FormService(object):
                                                 data[col]['lon'])
                 elif isinstance(field, fields.BooleanField):
                     data[col] = str(data[col])
-                field.raw_data = data[col]
-                if isinstance(field, fields.IntegerField) \
-                        and (data[col] == '' or data[col] is None):
-                    continue
+                elif isinstance(field, fields.IntegerField):
+                    data[col] = data[col] or ''
                 elif isinstance(field, fields.DateTimeField)\
                         and data[col] is not None:
                     dt = dt_parser.parse(data[col])
@@ -132,7 +126,7 @@ class FormService(object):
                 elif isinstance(field, ImageUploadField):
                     pos = data[col].find('base64,/')
                     if pos > -1:
-                        bstr = data[col][pos+7:].strip()
+                        bstr = data[col][pos + 7:].strip()
                     else:
                         bstr = data[col].strip()
                     log.debug("Image start: {}".format(bstr[:30]))
@@ -140,35 +134,65 @@ class FormService(object):
                     stream = BytesIO(base64.b64decode(bstr))
                     data[col] = FileStorage(stream=stream)
                     data[col].filename = "{}.jpg".format(filename_base)
-                field.process_formdata([data[col]])
+        return ImmutableMultiDict(data)
 
-        instance = None
+    @classmethod
+    def processView(cls, view, data, backrefs={}):
+        log.debug("Processing view {}".format(view))
+        log.debug("with data {}".format(data))
+        cols = view.add_columns
+        log.debug("for columns {}".format(cols))
+        form = cls.getForm(view, 'add')
+        related_data = {}
 
-        if form.validate():
-            instance = view.datamodel.obj()
-            form.populate_obj(instance)
-        else:
+        related_views = view.related_views or []
+        formdata = cls.preprocessFormData(form, cols, data)
+        view = view()
+        form = form(formdata, csrf_enabled=False)
+
+        # Populate backreference data for related views
+        for k, v in backrefs.items():
+            if hasattr(form, k):
+                field = getattr(form, k)
+                field.data = v
+
+        if not form.validate():
             raise ValidationError(
                 "\n".join(["{}: {}".format(k, ';'.join(v))
                            for k, v in form.errors.items()])
             )
 
-        if view.related_views is not None:
-            for rv in view.related_views:
-                attrs = rv.datamodel.get_related_fks([view])
-                reverse_attrs = view.datamodel.get_related_fks([rv])
-                for attr in attrs:
-                    if attr not in data.keys() or data[attr] is None:
-                        continue
-                    if view.datamodel.is_relation_one_to_many(attr):
-                        related_data[attr] = []
-                        for val in data[attr].values():
-                            obj = cls.processView(rv, val)
-                            related_data[attr].append(obj)
-                    if view.datamodel.is_relation_one_to_one(attr):
-                        related_data[attr] = cls.processView(
-                            rv, data[attr], ignore_required=reverse_attrs)
+        # Process the form. Basically the same as
+        # flask_appbuilder.baseviews.BaseCRUDView._add
 
+        view.process_form(form, True)
+        instance = view.datamodel.obj()
+        form.populate_obj(instance)
+        try:
+            view.pre_add(instance)
+        except Exception as e:
+            log.exception(e)
+            raise
+
+        # Process the form for the related views
+        for rv in related_views:
+            attrs = rv.datamodel.get_related_fks([view])
+            backrefs = dict([(k, instance) for k in
+                             view.datamodel.get_related_fks([rv])])
+            log.debug("Reverse attrs: {}".format(backrefs))
+            for attr in attrs:
+                if attr not in data.keys() or data[attr] is None:
+                    continue
+                if view.datamodel.is_relation_one_to_many(attr):
+                    related_data[attr] = []
+                    for val in data[attr].values():
+                        rel_inst = cls.processView(rv, val, backrefs=backrefs)
+                        related_data[attr].append(rel_inst)
+                if view.datamodel.is_relation_one_to_one(attr):
+                    related_data[attr] = cls.processView(rv, data[attr],
+                                                         backrefs=backrefs)
+
+        # Add the related instances to this instance
         for k, v in related_data.items():
             setattr(instance, k, v)
 
@@ -177,6 +201,9 @@ class FormService(object):
             instance.report_id = data['report_id']
         if(hasattr(instance, 'device_id') and 'device_id' in data.keys()):
             instance.device_id = data['device_id']
+
+        if view.datamodel.add(instance):
+            view.post_add(instance)
         return instance
 
     @classmethod
