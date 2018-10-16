@@ -976,7 +976,7 @@ class PawikanGeneralView(BaseObservationView):
          ]  # "tagged", "pictures", "outcome"]
     show_columns = BaseObservationView._base_show +\
         [
-            # "location",
+            "location",
             "location_type", "detailed_location",  # "barangay",
             "alive", "species", "lateral_scutes", "prefrontal_scutes",
             "encounter_type", "incident_description", "sex",
