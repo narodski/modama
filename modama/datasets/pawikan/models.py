@@ -2,7 +2,7 @@ from sqlalchemy import (Column, Integer, String, ForeignKey, Text,
                         UniqueConstraint, Enum, DateTime)
 from sqlalchemy.orm import relationship
 from modama.models.common import ModamaAuditMixin
-from modama.models.dataset_base import (BaseObservation, Sex, Model)
+from modama.models.dataset_base import (BaseObservation, Sex, Model, Barangay)
 from flask_appbuilder.models.mixins import ImageColumn
 from modama.utils import make_image
 from flask_appbuilder.filemanager import ImageManager
@@ -172,8 +172,8 @@ class PawikanGeneral(BaseObservation):
                               nullable=False)
     location_type = relationship(PawikanLocationType)
     detailed_location = Column(Text)
-    # barangay_id = Column(Integer, ForeignKey('barangay.id'), nullable=False)
-    # barangay = relationship(Barangay)
+    barangay_id = Column(Integer, ForeignKey('barangay.id'), nullable=True)
+    barangay = relationship(Barangay)
 
     stranding = relationship("PawikanStranding", back_populates='general',
                              uselist=False)
