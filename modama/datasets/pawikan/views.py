@@ -25,7 +25,7 @@ from modama.datasets.pawikan.models import (
     PawikanGeneral, PawikanStranding, PawikanTradeExhibit, PawikanInWater,
     PawikanFisheriesInteraction, PawikanGeneralPicture, PawikanSpecies,
     PawikanHatchlings, PawikanTagging, PawikanNestWithEgg,
-    PawikanNestEvaluation)
+    PawikanNestEvaluation, PawikanYesNoEnum)
 
 
 log = logging.getLogger(__name__)
@@ -685,8 +685,9 @@ class PawikanHatchlingsView(BaseModamaView):
         "hatchery_nest": "Hatchery nest",
     }
     validators_columns = {
-        'hatchery_nest': [ValueRequired("no", 'Please submit hatchlings from a'
-                                        'hatchery as "Nest evaluation"')]
+        'hatchery_nest': [ValueRequired(PawikanYesNoEnum.no,
+                                        'Please submit hatchlings from a'
+                                        ' hatchery as "Nest evaluation"')]
     }
     """
     _conditional_relations = [
@@ -1035,7 +1036,7 @@ class PawikanGeneralView(BaseObservationView):
 
     add_title = 'Add Pawikan Encounter'
     show_title = 'Pawikan Encounter'
-    list_title = 'Pawikan Encounterss'
+    list_title = 'Pawikan Encounters'
     edit_title = 'Edit Pawikan Encounter'
     label_columns = {
         "observation_datetime": "Encounter date and time",
