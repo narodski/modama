@@ -43,7 +43,7 @@ def connect():
         datasets = FormService.getDatasets()
         log.debug("Got the following datasets: {}".format(datasets))
         json_schema = FormService.getJsonSchema(datasets)
-        log.info("Sending datasets %s" % json_schema)
+        log.info("Sending datasets %s" % json_schema.keys())
         emit('newToken', token)
         emit('newDatasets', json_schema)
     else:
