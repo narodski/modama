@@ -27,7 +27,7 @@ def load_base_data():
         for v in ["Restaurant/eatery", "Aquarium display", "Pet shop",
                   "Fresh Market", "Household", "Souvenir shop",
                   "Fishing vessel", "Resort and Tourism", "School", "Street"]:
-            add(PawikanEncounterType(name=v))
+            add(PawikanFacilityEncountered(name=v))
             try:
                 commit()
             except Exception as e:
