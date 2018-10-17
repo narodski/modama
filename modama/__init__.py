@@ -60,7 +60,8 @@ app.jinja_env.globals['callable'] = callable
 sess = Session(app)
 db = SQLA(app)
 
-socketio = SocketIO(app, manage_session=False, message_queue='redis://')
+socketio = SocketIO(app, manage_session=False, message_queue='redis://',
+                    ping_timeout=300)
 
 migrate = Migrate(app, db, directory=APP_DIR + '/migrate')
 appbuilder = AppBuilder(app, db.session, base_template='modama_base.html',
