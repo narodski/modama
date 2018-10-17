@@ -1,4 +1,5 @@
 -e git://github.com/dolfandringa/Flask-AppBuilder@develop#egg=flask-appbuilder
+redis
 autopep8
 fab-addon-geoalchemy>=0.4.1
 wtforms_jsonschema2[fab]>=0.7.0
