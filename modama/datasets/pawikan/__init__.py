@@ -23,8 +23,20 @@ def load_base_data():
     query = db.session.query
     commit = db.session.commit
     rollback = db.session.rollback
+    if query(PawikanFacilityEncountered).count() == 0:
+        for v in ["Restaurant/eatery", "Aquarium display", "Pet shop",
+                  "Fresh Market", "Household", "Souvenir shop",
+                  "Fishing vessel", "Resort and Tourism", "School", "Street"]:
+            add(PawikanEncounterType(name=v))
+            try:
+                commit()
+            except Exception as e:
+                rollback()
+                log.warning("Failed adding {} due to error: ".format(type))
+                log.exception(e)
+
     if query(PawikanEncounterType).count() == 0:
-        for type in ["In-water", "Nest with eggs", "Nest evaluation",
+        for type in ["Nesting", "In-water", "Nest with eggs", "Nest evaluation",
                      "Hatchlings", "Stranding", "Fisheries interaction",
                      "Trade or exhibit"]:
             add(PawikanEncounterType(name=type))

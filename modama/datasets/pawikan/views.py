@@ -1075,13 +1075,13 @@ class PawikanGeneralView(BaseObservationView):
         ],
         'lateral_scutes': [
             NumberRange(
-                min=4, max=9,
-                message=_("There must be between 4 and 9 scutes."))
+                min=0, max=9,
+                message=_("There must be between 0 and 9 scutes."))
         ],
         'prefrontal_scutes': [
             NumberRange(
-                min=2, max=10,
-                message=_("There can be no more than 10 scutes and a minimum of 2."))
+                min=2, max=4,
+                message=_("There should be 2-4 scutes only."))
         ]
     }
     _conditional_relations = [

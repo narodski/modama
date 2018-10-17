@@ -139,7 +139,7 @@ class FormService(object):
     @classmethod
     def processView(cls, view, data, backrefs={}):
         log.debug("Processing view {}".format(view))
-        log.debug("with data {}".format(data))
+        # log.debug("with data {}".format(data))
         cols = view.add_columns
         log.debug("for columns {}".format(cols))
         form = cls.getForm(view, 'add')
