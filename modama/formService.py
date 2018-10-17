@@ -202,8 +202,8 @@ class FormService(object):
         if(hasattr(instance, 'device_id') and 'device_id' in data.keys()):
             instance.device_id = data['device_id']
 
-        if view.datamodel.add(instance):
-            view.post_add(instance)
+        # if view.datamodel.add(instance):
+        #     view.post_add(instance)
         return instance
 
     @classmethod
