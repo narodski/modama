@@ -16,3 +16,4 @@ python-dateutil
 tzlocal
 SQLAlchemy-Continuum
 flask_weasyprint
+gunicorn
