@@ -4,7 +4,7 @@ Monitoring Data Management webapplication
 ## Installation
 
 ```
-git clone https://github.com/dolfandringa/modama.git
+git clone https://github.com/narodski/modama.git
 mkvirtualenv modama
 cd modama
 pip install -r requirements.txt
