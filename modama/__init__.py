@@ -49,7 +49,8 @@ if app.debug:
     cors = CORS(app)
 
 
-@jinja2.contextfunction
+#@jinja2.contextfunction
+@jinja2.pass_context
 def get_context(c):
     return c
 
