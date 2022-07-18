@@ -1,5 +1,4 @@
-#Flask==1.1.4
--e git+https://github.com/narodski/Flask-AppBuilder#egg=flask-appbuilder
+Flask==1.1.4
 redis
 autopep8
 fab-addon-geoalchemy>=0.4.1

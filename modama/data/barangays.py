@@ -1,4 +1,4 @@
-(# "psgc","name","municipality"),
+# ("psgc","name","municipality"),
 barangays = [
     ("012801001","Adams (Pob.)","012801000"),
     ("012802001","Bani","012802000"),

@@ -49,8 +49,8 @@ if app.debug:
     cors = CORS(app)
 
 
-#@jinja2.contextfunction
-@jinja2.pass_context
+@jinja2.contextfunction
+# @jinja2.pass_context
 def get_context(c):
     return c
 
@@ -79,10 +79,10 @@ appbuilder.add_view(OrganizationView, "List Organizations",
 def load_user_from_token(request):
     user = appbuilder.sm.auth_view.getUserFromAuthHeader()
     if user is not None:
-        log.debug("Got user from header: {}".format(user))
+        log.debug(f"Got user from header: {user}")
         return user
     user = appbuilder.sm.auth_view.getUserFromCookie()
-    log.debug("Got user from cookie: {}".format(user))
+    log.debug(f"Got user from cookie: {user}")
     return user
 
 

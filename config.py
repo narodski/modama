@@ -24,7 +24,7 @@ SQLALCHEMY_DATABASE_URI = 'postgresql:///modama'
 CSRF_ENABLED = True
 
 SESSION_TYPE = 'filesystem'
-SESSION_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = False # TODO: change to True when SSL is configured
 SESSION_FILE_DIR = 'instance/session/'
 REMEMBER_COOKIE_SECURE = True
 SESSION_COOKIE_HTTPONLY = True

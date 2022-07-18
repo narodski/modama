@@ -13,3 +13,7 @@ app.db
 env
 venv
 *.sublime*
+data/*
+.vscode
+.env
+logs/*.log
