@@ -155,6 +155,7 @@ class AuthDBJWTView(AuthDBView):
 
         # Get the token for the currently logged-in user (if any)
         token = self.getJWT()
+
         if token is not None:
             valid_until = token.get('exp', None)
             resp = make_response(redirect(redir_url))
@@ -178,21 +179,23 @@ class AuthDBJWTView(AuthDBView):
 
         # No token in cookie, show login form and check username/password
         form = LoginForm_db()
-        if form.validate_on_submit():
-            user = self.appbuilder.sm.auth_user_db(form.username.data,
-                                                   form.password.data)
-            if not user:
-                flash(as_unicode(self.invalid_login_message), 'warning')
-                return redirect(redir_url)
-            login_user(user, remember=False)
-            token = self.getJWT()
-            valid_until = token.get('exp', None)
-            resp = make_response(redirect(redir_url))
-            resp.set_cookie('modama_jwt', self.encodeJWT(token),
-                            expires=valid_until, secure=cookie_secure,
-                            httponly=True)
-            return resp
-        return self.render_template(self.login_template,
-                                    title=self.title,
-                                    form=form,
-                                    appbuilder=self.appbuilder)
+        if not form.validate_on_submit():
+            return self.render_template(self.login_template,
+                                        title=self.title,
+                                        form=form,
+                                        appbuilder=self.appbuilder)
+        
+        user = self.appbuilder.sm.auth_user_db(form.username.data,
+                                                form.password.data)
+        if not user:
+            flash(as_unicode(self.invalid_login_message), 'warning')
+            return redirect(redir_url)
+        logging_in = login_user(user, remember=False)
+        token = self.getJWT()
+        valid_until = token.get('exp', None)
+        resp = make_response(redirect(redir_url))
+        modama_jwt = self.encodeJWT(token)
+        resp.set_cookie('modama_jwt', modama_jwt,
+                        expires=valid_until, secure=cookie_secure,
+                        httponly=True)
+        return resp

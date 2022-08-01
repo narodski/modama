@@ -1,0 +1,27 @@
+version: '3.4'
+
+services:
+  # modama:
+  #   image: modama
+  #   build:
+  #     context: .
+  #     dockerfile: ./Dockerfile
+  #   ports:
+  #     - 5002:5002
+
+  database:
+    image: postgis/postgis:14-3.2
+    ports:
+      - 5433:5432
+    environment:
+      - POSTGRES_USER=modama
+      - POSTGRES_PASSWORD=modama
+      - POSTGRES_DB=modama
+      - POSTGRES_DB_HOST=localhost
+      - POSTGRES_DB_PORT=5432
+      - POSTGRES_DB_USER=modama
+      - POSTGRES_DB_PASSWORD=modama
+      - POSTGRES_DB_NAME=modama
+    volumes:
+      - ./data/postgres:/var/lib/postgresql/data
+    restart: always
